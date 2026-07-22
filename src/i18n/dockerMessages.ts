@@ -5,7 +5,7 @@ export const dockerInstallMessages = {
       eyebrow: 'Container deployment',
       title: '使用 Docker 部署',
       intro:
-        '选择适合当前网络的镜像来源，复制完整的 Compose 配置，即可在 NAS、家庭服务器或 Linux 主机上运行 fn-knock。',
+        '选择适合当前网络的镜像来源，复制完整的 Compose 配置，即可在 Linux 主机或基于 Linux 的 NAS 上运行 fn-knock。',
       dockerHubLink: '查看原始 Docker Hub 页面',
       sourceLabel: '选择镜像来源',
       sourceTitle: '镜像源',
@@ -20,7 +20,7 @@ export const dockerInstallMessages = {
         '直接从 Docker Hub 的 kcilnk/fn-knock 仓库拉取，适合可稳定访问 Docker Hub 的网络。',
       quickInstallTitle: '一键安装',
       quickInstallDescription:
-        '在目标主机的 root 终端中复制并粘贴下面整段脚本。脚本会创建配置、拉取当前镜像并立即启动 fn-knock。',
+        '在目标 Linux 主机的 root 终端中粘贴下面整段脚本。脚本会创建 IPv6 bridge、只读映射宿主机 IPv6 网卡信息，并立即启动 fn-knock。',
       quickInstallSource: '当前镜像',
       quickInstallTerminal: 'Root 终端',
       quickInstallSafety:
@@ -28,7 +28,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完整安装步骤',
       requirementsTitle: '检查 Docker 环境',
       requirementsDescription:
-        '需要 Docker Engine 和 Docker Compose 插件。以下两个命令都应正常输出版本信息。',
+        '需要 Linux 宿主机、Docker Engine 和 Docker Compose 插件。宿主机需启用 IPv6，并存在 /proc/net/if_inet6。',
       prepareTitle: '准备目录并拉取镜像',
       prepareDescription: '创建独立运行目录，然后从当前选中的镜像来源预先拉取 latest。',
       environmentTitle: '创建 .env',
@@ -40,19 +40,20 @@ export const dockerInstallMessages = {
       publicPortsConfigDescription:
         '管理面板和网关入口端口；修改后 Compose 的宿主机映射会同步使用新端口。',
       ipv4ConfigDescription: 'Docker bridge 的 IPv4 子网；与同机网络冲突时可换成其他私网 CIDR。',
-      ipv6ConfigDescription: '默认启用的 ULA /64 子网，用于保留外部 IPv6 来源地址。',
+      ipv6ConfigDescription:
+        'Docker bridge 的 IPv6 ULA /64；Compose 同时只读映射宿主机 if_inet6，让 DDNS 可选择真实 IPv6 网卡。',
       trustedProxyConfigDescription: '仅当 7991 位于可信反向代理后时，填写代理出口 IP 或 CIDR。',
       discoverLanConfigDescription: '仅在第三方反代无法自动识别宿主机局域网地址时作为兜底。',
       composeTitle: '创建 docker-compose.yml',
       composeDescription:
-        '最新部署仅需一个 fn-knock 容器，并为应用数据和网关配置创建两个持久化卷，无需单独启动 Redis。',
+        '最新部署仅需一个 fn-knock 容器。Compose 启用 IPv6 bridge，并将宿主机 /proc/net/if_inet6 只读映射进容器，供 DDNS 读取 IPv6 网卡。',
       startTitle: '启动并检查状态',
       startDescription:
-        '启动服务后确认两个容器均正常运行；最后一条命令会持续显示 fn-knock 日志，可按 Ctrl+C 退出。',
+        '启动后确认 fn-knock 容器正常运行；最后一条命令会持续显示日志，可按 Ctrl+C 退出。',
       afterInstallEyebrow: 'First run',
       afterInstallTitle: '首次访问与配置',
       afterInstallDescription:
-        'Compose 只向宿主机映射管理面板与网关入口，7996–7998 保持容器内部使用。不要直接把管理面板暴露到公网。',
+        'Compose 只向宿主机映射管理面板与网关入口，7996–7998 保持容器内部使用。IPv6 网卡信息通过只读文件映射提供给 DDNS。',
       adminPort: '管理面板 · 首次访问设置密码',
       gatewayPort: '网关 / 代理对外入口',
       exposureScope: '暴露范围',
@@ -92,7 +93,7 @@ export const dockerInstallMessages = {
       eyebrow: 'Container deployment',
       title: '使用 Docker 部署',
       intro:
-        '選擇適合目前網路的映像來源，複製完整的 Compose 設定，即可在 NAS、家庭伺服器或 Linux 主機上執行 fn-knock。',
+        '選擇適合目前網路的映像來源，複製完整的 Compose 設定，即可在 Linux 主機或基於 Linux 的 NAS 上執行 fn-knock。',
       dockerHubLink: '查看原始 Docker Hub 頁面',
       sourceLabel: '選擇映像來源',
       sourceTitle: '映像來源',
@@ -107,7 +108,7 @@ export const dockerInstallMessages = {
         '直接從 Docker Hub 的 kcilnk/fn-knock 儲存庫拉取，適合可穩定存取 Docker Hub 的網路。',
       quickInstallTitle: '一鍵安裝',
       quickInstallDescription:
-        '在目標主機的 root 終端機中複製並貼上下方整段指令碼。指令碼會建立設定、拉取目前映像並立即啟動 fn-knock。',
+        '在目標 Linux 主機的 root 終端機中貼上下方整段指令碼。指令碼會建立 IPv6 bridge、唯讀映射主機 IPv6 網卡資訊，並立即啟動 fn-knock。',
       quickInstallSource: '目前映像',
       quickInstallTerminal: 'Root 終端機',
       quickInstallSafety:
@@ -115,7 +116,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完整安裝步驟',
       requirementsTitle: '檢查 Docker 環境',
       requirementsDescription:
-        '需要 Docker Engine 和 Docker Compose 外掛。以下兩個指令都應正常輸出版本資訊。',
+        '需要 Linux 主機、Docker Engine 和 Docker Compose 外掛。主機需啟用 IPv6，並存在 /proc/net/if_inet6。',
       prepareTitle: '準備目錄並拉取映像',
       prepareDescription: '建立獨立執行目錄，然後從目前選取的映像來源預先拉取 latest。',
       environmentTitle: '建立 .env',
@@ -127,19 +128,20 @@ export const dockerInstallMessages = {
       publicPortsConfigDescription:
         '管理面板與閘道入口連接埠；修改後 Compose 的主機映射會同步使用新值。',
       ipv4ConfigDescription: 'Docker bridge 的 IPv4 子網；與同機網路衝突時可換成其他私有 CIDR。',
-      ipv6ConfigDescription: '預設啟用的 ULA /64 子網，用於保留外部 IPv6 來源位址。',
+      ipv6ConfigDescription:
+        'Docker bridge 的 IPv6 ULA /64；Compose 同時唯讀映射主機 if_inet6，讓 DDNS 可選擇真實 IPv6 網卡。',
       trustedProxyConfigDescription: '僅當 7991 位於可信反向代理後時，填寫代理出口 IP 或 CIDR。',
       discoverLanConfigDescription: '僅在第三方反代無法自動識別主機區域網路位址時作為備援。',
       composeTitle: '建立 docker-compose.yml',
       composeDescription:
-        '最新部署只需要一個 fn-knock 容器，並為應用程式資料與閘道設定建立兩個持久化磁碟區，不需另外啟動 Redis。',
+        '最新部署只需要一個 fn-knock 容器。Compose 啟用 IPv6 bridge，並將主機 /proc/net/if_inet6 唯讀映射進容器，供 DDNS 讀取 IPv6 網卡。',
       startTitle: '啟動並檢查狀態',
       startDescription:
-        '啟動服務後確認兩個容器均正常執行；最後一個指令會持續顯示 fn-knock 日誌，可按 Ctrl+C 結束。',
+        '啟動後確認 fn-knock 容器正常執行；最後一個指令會持續顯示日誌，可按 Ctrl+C 結束。',
       afterInstallEyebrow: 'First run',
       afterInstallTitle: '首次存取與設定',
       afterInstallDescription:
-        'Compose 只將管理面板與閘道入口映射到主機，7996–7998 保持容器內部使用。不要直接把管理面板暴露到公網。',
+        'Compose 只將管理面板與閘道入口映射到主機，7996–7998 保持容器內部使用。IPv6 網卡資訊透過唯讀檔案映射提供給 DDNS。',
       adminPort: '管理面板 · 首次存取設定密碼',
       gatewayPort: '閘道 / 代理對外入口',
       exposureScope: '暴露範圍',
@@ -179,7 +181,7 @@ export const dockerInstallMessages = {
       eyebrow: 'Container deployment',
       title: 'Deploy with Docker',
       intro:
-        'Choose the image source that works best on your network, then use the complete Compose setup to run fn-knock on a NAS, home server, or Linux host.',
+        'Choose the image source that works best on your network, then use the complete Compose setup to run fn-knock on a Linux host or Linux-based NAS.',
       dockerHubLink: 'Open the original Docker Hub page',
       sourceLabel: 'Choose an image source',
       sourceTitle: 'Image source',
@@ -194,7 +196,7 @@ export const dockerInstallMessages = {
         'Pull directly from kcilnk/fn-knock on Docker Hub when your network has reliable Docker Hub access.',
       quickInstallTitle: 'One-paste install',
       quickInstallDescription:
-        'Copy and paste the complete script below into a root terminal on the target host. It creates the configuration, pulls the selected image, and starts fn-knock immediately.',
+        "Paste the complete script into a root terminal on the target Linux host. It creates an IPv6 bridge, mounts the host's IPv6 interface table read-only, and starts fn-knock.",
       quickInstallSource: 'Selected image',
       quickInstallTerminal: 'Root terminal',
       quickInstallSafety:
@@ -202,7 +204,7 @@ export const dockerInstallMessages = {
       stepsTitle: 'Complete installation',
       requirementsTitle: 'Check your Docker environment',
       requirementsDescription:
-        'Docker Engine and the Docker Compose plugin are required. Both commands should print version information.',
+        'A Linux host, Docker Engine, and the Docker Compose plugin are required. IPv6 must be enabled and /proc/net/if_inet6 must exist on the host.',
       prepareTitle: 'Prepare a directory and pull the image',
       prepareDescription:
         'Create a dedicated working directory, then pull latest from the selected image source.',
@@ -218,21 +220,21 @@ export const dockerInstallMessages = {
       ipv4ConfigDescription:
         'The Docker bridge IPv4 subnet. Change it to another private CIDR if it conflicts with a local network.',
       ipv6ConfigDescription:
-        'The ULA /64 subnet enabled by default to preserve external IPv6 source addresses.',
+        "The bridge's IPv6 ULA /64. Compose also mounts the host if_inet6 file read-only so DDNS can select a real IPv6 interface.",
       trustedProxyConfigDescription:
         'Set the proxy egress IP or CIDR only when port 7991 is behind a trusted reverse proxy.',
       discoverLanConfigDescription:
         'A fallback only when a third-party reverse proxy cannot detect the host LAN address automatically.',
       composeTitle: 'Create docker-compose.yml',
       composeDescription:
-        'The current deployment uses one fn-knock container and two persistent volumes for application data and gateway configuration. A separate Redis container is no longer required.',
+        "The deployment uses one container, enables IPv6 on its bridge, and mounts the host's /proc/net/if_inet6 read-only so DDNS can read IPv6 interfaces.",
       startTitle: 'Start and verify',
       startDescription:
-        'Confirm that both containers are running. The final command follows fn-knock logs; press Ctrl+C to stop following them.',
+        'Confirm that the fn-knock container is running. The final command follows its logs; press Ctrl+C to stop following them.',
       afterInstallEyebrow: 'First run',
       afterInstallTitle: 'First access and setup',
       afterInstallDescription:
-        'Compose maps only the admin panel and gateway to the host. Ports 7996–7998 remain internal to the container. Do not expose the admin panel directly to the internet.',
+        "Compose maps only the admin panel and gateway to the host. Ports 7996–7998 stay internal, while a read-only file mount gives DDNS access to the host's IPv6 interfaces.",
       adminPort: 'Admin panel · set a password on first visit',
       gatewayPort: 'Public gateway / proxy entry',
       exposureScope: 'Exposure',
@@ -276,7 +278,7 @@ export const dockerInstallMessages = {
       eyebrow: 'Container deployment',
       title: 'Docker로 배포',
       intro:
-        '현재 네트워크에 맞는 이미지 소스를 선택하고 전체 Compose 설정을 복사하여 NAS, 홈 서버 또는 Linux 호스트에서 fn-knock을 실행하세요.',
+        '현재 네트워크에 맞는 이미지 소스를 선택하고 전체 Compose 설정을 사용하여 Linux 호스트 또는 Linux 기반 NAS에서 fn-knock을 실행하세요.',
       dockerHubLink: '원본 Docker Hub 페이지 보기',
       sourceLabel: '이미지 소스 선택',
       sourceTitle: '이미지 소스',
@@ -291,7 +293,7 @@ export const dockerInstallMessages = {
         'Docker Hub 연결이 안정적인 환경에서는 kcilnk/fn-knock 저장소에서 직접 가져옵니다.',
       quickInstallTitle: '한 번에 설치',
       quickInstallDescription:
-        '아래 전체 스크립트를 대상 호스트의 root 터미널에 복사하여 붙여넣으세요. 설정을 만들고 선택한 이미지를 가져온 뒤 fn-knock을 즉시 시작합니다.',
+        '아래 전체 스크립트를 대상 Linux 호스트의 root 터미널에 붙여넣으세요. IPv6 bridge를 만들고 호스트 IPv6 인터페이스 정보를 읽기 전용으로 마운트한 뒤 fn-knock을 시작합니다.',
       quickInstallSource: '선택한 이미지',
       quickInstallTerminal: 'Root 터미널',
       quickInstallSafety:
@@ -299,7 +301,7 @@ export const dockerInstallMessages = {
       stepsTitle: '전체 설치 단계',
       requirementsTitle: 'Docker 환경 확인',
       requirementsDescription:
-        'Docker Engine과 Docker Compose 플러그인이 필요합니다. 두 명령 모두 버전 정보를 출력해야 합니다.',
+        'Linux 호스트, Docker Engine, Docker Compose 플러그인이 필요합니다. 호스트에서 IPv6가 활성화되어 있고 /proc/net/if_inet6가 존재해야 합니다.',
       prepareTitle: '디렉터리 준비 및 이미지 가져오기',
       prepareDescription:
         '전용 실행 디렉터리를 만들고 선택한 이미지 소스에서 latest를 미리 가져옵니다.',
@@ -315,21 +317,21 @@ export const dockerInstallMessages = {
       ipv4ConfigDescription:
         'Docker bridge IPv4 서브넷입니다. 로컬 네트워크와 충돌하면 다른 사설 CIDR로 변경하세요.',
       ipv6ConfigDescription:
-        '외부 IPv6 원본 주소를 유지하기 위해 기본으로 활성화되는 ULA /64 서브넷입니다.',
+        'bridge의 IPv6 ULA /64입니다. Compose는 호스트 if_inet6 파일도 읽기 전용으로 마운트하여 DDNS가 실제 IPv6 인터페이스를 선택하게 합니다.',
       trustedProxyConfigDescription:
         '7991 포트가 신뢰할 수 있는 리버스 프록시 뒤에 있을 때만 프록시 출구 IP 또는 CIDR을 설정합니다.',
       discoverLanConfigDescription:
         '서드파티 리버스 프록시가 호스트 LAN 주소를 자동 감지하지 못할 때만 사용하는 대체 값입니다.',
       composeTitle: 'docker-compose.yml 생성',
       composeDescription:
-        '현재 배포는 fn-knock 컨테이너 하나와 애플리케이션 데이터 및 게이트웨이 설정용 영구 볼륨 두 개만 사용합니다. 별도 Redis 컨테이너는 필요하지 않습니다.',
+        '컨테이너 하나를 사용하고 bridge에서 IPv6를 활성화하며, DDNS가 IPv6 인터페이스를 읽도록 호스트 /proc/net/if_inet6를 읽기 전용으로 마운트합니다.',
       startTitle: '시작 및 상태 확인',
       startDescription:
-        '두 컨테이너가 모두 실행 중인지 확인하세요. 마지막 명령은 fn-knock 로그를 계속 표시하며 Ctrl+C로 종료할 수 있습니다.',
+        'fn-knock 컨테이너가 실행 중인지 확인하세요. 마지막 명령은 로그를 계속 표시하며 Ctrl+C로 종료할 수 있습니다.',
       afterInstallEyebrow: 'First run',
       afterInstallTitle: '첫 접속 및 설정',
       afterInstallDescription:
-        'Compose는 관리 패널과 게이트웨이만 호스트에 매핑하며 7996–7998은 컨테이너 내부에 유지합니다. 관리 패널을 인터넷에 직접 노출하지 마세요.',
+        'Compose는 관리 패널과 게이트웨이만 호스트에 매핑하고 7996–7998은 내부에 유지합니다. 읽기 전용 파일 마운트로 DDNS에 호스트 IPv6 인터페이스를 제공합니다.',
       adminPort: '관리 패널 · 첫 접속 시 비밀번호 설정',
       gatewayPort: '외부 게이트웨이 / 프록시 진입점',
       exposureScope: '노출 범위',
@@ -373,7 +375,7 @@ export const dockerInstallMessages = {
       eyebrow: 'Container deployment',
       title: 'Docker でデプロイ',
       intro:
-        'ネットワークに適したイメージソースを選択し、完全な Compose 設定を使用して NAS、ホームサーバー、Linux ホストで fn-knock を実行します。',
+        'ネットワークに適したイメージソースを選択し、完全な Compose 設定を使用して Linux ホストまたは Linux ベースの NAS で fn-knock を実行します。',
       dockerHubLink: '元の Docker Hub ページを開く',
       sourceLabel: 'イメージソースを選択',
       sourceTitle: 'イメージソース',
@@ -388,7 +390,7 @@ export const dockerInstallMessages = {
         'Docker Hub に安定して接続できる環境では、kcilnk/fn-knock リポジトリから直接取得します。',
       quickInstallTitle: '一括インストール',
       quickInstallDescription:
-        '以下のスクリプト全体を対象ホストの root ターミナルへコピーして貼り付けます。設定を作成し、選択したイメージを取得して fn-knock をすぐに起動します。',
+        '以下のスクリプト全体を対象 Linux ホストの root ターミナルへ貼り付けます。IPv6 bridge を作成し、ホストの IPv6 インターフェイス情報を読み取り専用でマウントして fn-knock を起動します。',
       quickInstallSource: '選択中のイメージ',
       quickInstallTerminal: 'Root ターミナル',
       quickInstallSafety:
@@ -396,7 +398,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完全なインストール手順',
       requirementsTitle: 'Docker 環境を確認',
       requirementsDescription:
-        'Docker Engine と Docker Compose プラグインが必要です。両方のコマンドでバージョンが表示されることを確認します。',
+        'Linux ホスト、Docker Engine、Docker Compose プラグインが必要です。ホストで IPv6 が有効で、/proc/net/if_inet6 が存在する必要があります。',
       prepareTitle: 'ディレクトリを準備してイメージを取得',
       prepareDescription:
         '専用の作業ディレクトリを作成し、選択したソースから latest を取得します。',
@@ -412,21 +414,21 @@ export const dockerInstallMessages = {
       ipv4ConfigDescription:
         'Docker bridge の IPv4 サブネットです。ローカルネットワークと競合する場合は別のプライベート CIDR に変更します。',
       ipv6ConfigDescription:
-        '外部 IPv6 の送信元アドレスを保持するため、既定で有効になる ULA /64 サブネットです。',
+        'bridge の IPv6 ULA /64 です。Compose はホストの if_inet6 も読み取り専用でマウントし、DDNS で実際の IPv6 インターフェイスを選択できるようにします。',
       trustedProxyConfigDescription:
         'ポート 7991 が信頼できるリバースプロキシの背後にある場合のみ、プロキシの送信元 IP または CIDR を設定します。',
       discoverLanConfigDescription:
         'サードパーティ製リバースプロキシがホストの LAN アドレスを自動検出できない場合だけ使うフォールバックです。',
       composeTitle: 'docker-compose.yml を作成',
       composeDescription:
-        '現在のデプロイでは fn-knock コンテナ 1 つと、アプリケーションデータおよびゲートウェイ設定用の永続ボリューム 2 つだけを使用します。別の Redis コンテナは不要です。',
+        'コンテナは 1 つだけです。bridge で IPv6 を有効にし、DDNS が IPv6 インターフェイスを読めるようホストの /proc/net/if_inet6 を読み取り専用でマウントします。',
       startTitle: '起動して状態を確認',
       startDescription:
-        '両方のコンテナが実行中であることを確認します。最後のコマンドは fn-knock のログを表示し続け、Ctrl+C で終了できます。',
+        'fn-knock コンテナが実行中であることを確認します。最後のコマンドはログを表示し続け、Ctrl+C で終了できます。',
       afterInstallEyebrow: 'First run',
       afterInstallTitle: '初回アクセスと設定',
       afterInstallDescription:
-        'Compose がホストへマッピングするのは管理パネルとゲートウェイだけで、7996–7998 はコンテナ内部に残ります。管理パネルをインターネットへ直接公開しないでください。',
+        'Compose がホストへマッピングするのは管理パネルとゲートウェイだけで、7996–7998 は内部に残ります。読み取り専用ファイルマウントで DDNS にホストの IPv6 インターフェイスを提供します。',
       adminPort: '管理パネル · 初回アクセス時にパスワード設定',
       gatewayPort: '外部ゲートウェイ / プロキシ入口',
       exposureScope: '公開範囲',

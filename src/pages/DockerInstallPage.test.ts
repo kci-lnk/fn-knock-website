@@ -51,8 +51,9 @@ describe('DockerInstallPage', () => {
     expect(wrapper.text()).toContain('fn_knock_gateway:/usr/local/etc/fn-knock')
   })
 
-  it('documents every current port and the trusted-proxy fallbacks', () => {
+  it('documents IPv6 interface access, every current port, and trusted-proxy fallbacks', () => {
     const text = mountPage().text()
+    const command = mountPage().get('[data-testid="quick-install-command"]').text()
 
     for (const port of ['7991', '7999', '7998', '7997', '7996']) {
       expect(text).toContain(port)
@@ -60,12 +61,19 @@ describe('DockerInstallPage', () => {
     expect(text).toContain('DOCKER_ADMIN_TRUSTED_PROXY_CIDRS')
     expect(text).toContain('DOCKER_DISCOVER_LAN_IP')
     expect(text).toContain('FN_KNOCK_DOCKER_IPV6_SUBNET')
+    expect(command).toContain('enable_ipv6: true')
+    expect(command).toContain('DDNS_HOST_IF_INET6_PATH: /host/proc/net/if_inet6')
+    expect(command).toContain('source: /proc/net/if_inet6')
+    expect(command).toContain('target: /host/proc/net/if_inet6')
+    expect(command).toContain('read_only: true')
+    expect(command).not.toContain('network_mode: host')
   })
 
   it('provides a guarded one-paste installer without overwriting an existing setup', () => {
     const command = mountPage().get('[data-testid="quick-install-command"]').text()
 
     expect(command).toContain('install_dir=/opt/fn-knock-docker')
+    expect(command).toContain('[ -s /proc/net/if_inet6 ]')
     expect(command).toContain('if [ -e .env ] || [ -e docker-compose.yml ]')
     expect(command).toContain("cat > .env <<'FN_KNOCK_ENV'")
     expect(command).toContain("cat > docker-compose.yml <<'FN_KNOCK_COMPOSE'")
