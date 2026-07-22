@@ -73,7 +73,8 @@ describe('DockerInstallPage', () => {
     const command = mountPage().get('[data-testid="quick-install-command"]').text()
 
     expect(command).toContain('install_dir=/opt/fn-knock-docker')
-    expect(command).toContain('[ -s /proc/net/if_inet6 ]')
+    expect(command).toContain('awk \'$4 == "00"')
+    expect(command).not.toContain('[ -s /proc/net/if_inet6 ]')
     expect(command).toContain('if [ -e .env ] || [ -e docker-compose.yml ]')
     expect(command).toContain("cat > .env <<'FN_KNOCK_ENV'")
     expect(command).toContain("cat > docker-compose.yml <<'FN_KNOCK_COMPOSE'")

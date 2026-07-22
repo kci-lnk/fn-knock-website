@@ -20,7 +20,7 @@ export const dockerInstallMessages = {
         '直接从 Docker Hub 的 kcilnk/fn-knock 仓库拉取，适合可稳定访问 Docker Hub 的网络。',
       quickInstallTitle: '一键安装',
       quickInstallDescription:
-        '在目标 Linux 主机的 root 终端中粘贴下面整段脚本。脚本会创建 IPv6 bridge、只读映射宿主机 IPv6 网卡信息，并立即启动 fn-knock。',
+        '在目标 Linux 主机的 root 终端中粘贴下面整段脚本。脚本会自动读取 IPv6 接口表，确认存在公网 IPv6 后再创建 bridge 并启动 fn-knock。',
       quickInstallSource: '当前镜像',
       quickInstallTerminal: 'Root 终端',
       quickInstallSafety:
@@ -28,7 +28,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完整安装步骤',
       requirementsTitle: '检查 Docker 环境',
       requirementsDescription:
-        '需要 Linux 宿主机、Docker Engine 和 Docker Compose 插件。宿主机需启用 IPv6，并存在 /proc/net/if_inet6。',
+        '需要 Linux 宿主机、Docker Engine 和 Docker Compose 插件。/proc/net/if_inet6 是大小始终显示为 0 的虚拟文件，安装脚本会读取内容判断，不会用文件大小误判。',
       prepareTitle: '准备目录并拉取镜像',
       prepareDescription: '创建独立运行目录，然后从当前选中的镜像来源预先拉取 latest。',
       environmentTitle: '创建 .env',
@@ -108,7 +108,7 @@ export const dockerInstallMessages = {
         '直接從 Docker Hub 的 kcilnk/fn-knock 儲存庫拉取，適合可穩定存取 Docker Hub 的網路。',
       quickInstallTitle: '一鍵安裝',
       quickInstallDescription:
-        '在目標 Linux 主機的 root 終端機中貼上下方整段指令碼。指令碼會建立 IPv6 bridge、唯讀映射主機 IPv6 網卡資訊，並立即啟動 fn-knock。',
+        '在目標 Linux 主機的 root 終端機中貼上下方整段指令碼。指令碼會自動讀取 IPv6 介面表，確認存在公網 IPv6 後再建立 bridge 並啟動 fn-knock。',
       quickInstallSource: '目前映像',
       quickInstallTerminal: 'Root 終端機',
       quickInstallSafety:
@@ -116,7 +116,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完整安裝步驟',
       requirementsTitle: '檢查 Docker 環境',
       requirementsDescription:
-        '需要 Linux 主機、Docker Engine 和 Docker Compose 外掛。主機需啟用 IPv6，並存在 /proc/net/if_inet6。',
+        '需要 Linux 主機、Docker Engine 和 Docker Compose 外掛。/proc/net/if_inet6 是大小始終顯示為 0 的虛擬檔案，安裝指令碼會讀取內容判斷，不會以檔案大小誤判。',
       prepareTitle: '準備目錄並拉取映像',
       prepareDescription: '建立獨立執行目錄，然後從目前選取的映像來源預先拉取 latest。',
       environmentTitle: '建立 .env',
@@ -196,7 +196,7 @@ export const dockerInstallMessages = {
         'Pull directly from kcilnk/fn-knock on Docker Hub when your network has reliable Docker Hub access.',
       quickInstallTitle: 'One-paste install',
       quickInstallDescription:
-        "Paste the complete script into a root terminal on the target Linux host. It creates an IPv6 bridge, mounts the host's IPv6 interface table read-only, and starts fn-knock.",
+        'Paste the script into a root terminal on the Linux host. It reads the IPv6 interface table, verifies a global IPv6 address, then creates the bridge and starts fn-knock.',
       quickInstallSource: 'Selected image',
       quickInstallTerminal: 'Root terminal',
       quickInstallSafety:
@@ -204,7 +204,7 @@ export const dockerInstallMessages = {
       stepsTitle: 'Complete installation',
       requirementsTitle: 'Check your Docker environment',
       requirementsDescription:
-        'A Linux host, Docker Engine, and the Docker Compose plugin are required. IPv6 must be enabled and /proc/net/if_inet6 must exist on the host.',
+        'A Linux host, Docker Engine, and Docker Compose are required. /proc/net/if_inet6 is a virtual file whose reported size is always zero, so the installer reads its contents instead of checking its size.',
       prepareTitle: 'Prepare a directory and pull the image',
       prepareDescription:
         'Create a dedicated working directory, then pull latest from the selected image source.',
@@ -293,7 +293,7 @@ export const dockerInstallMessages = {
         'Docker Hub 연결이 안정적인 환경에서는 kcilnk/fn-knock 저장소에서 직접 가져옵니다.',
       quickInstallTitle: '한 번에 설치',
       quickInstallDescription:
-        '아래 전체 스크립트를 대상 Linux 호스트의 root 터미널에 붙여넣으세요. IPv6 bridge를 만들고 호스트 IPv6 인터페이스 정보를 읽기 전용으로 마운트한 뒤 fn-knock을 시작합니다.',
+        '대상 Linux 호스트의 root 터미널에 전체 스크립트를 붙여넣으세요. IPv6 인터페이스 테이블을 읽고 글로벌 IPv6를 확인한 뒤 bridge를 만들고 fn-knock을 시작합니다.',
       quickInstallSource: '선택한 이미지',
       quickInstallTerminal: 'Root 터미널',
       quickInstallSafety:
@@ -301,7 +301,7 @@ export const dockerInstallMessages = {
       stepsTitle: '전체 설치 단계',
       requirementsTitle: 'Docker 환경 확인',
       requirementsDescription:
-        'Linux 호스트, Docker Engine, Docker Compose 플러그인이 필요합니다. 호스트에서 IPv6가 활성화되어 있고 /proc/net/if_inet6가 존재해야 합니다.',
+        'Linux 호스트, Docker Engine, Docker Compose가 필요합니다. /proc/net/if_inet6는 표시 크기가 항상 0인 가상 파일이므로 설치 스크립트는 크기가 아니라 내용을 읽어 판단합니다.',
       prepareTitle: '디렉터리 준비 및 이미지 가져오기',
       prepareDescription:
         '전용 실행 디렉터리를 만들고 선택한 이미지 소스에서 latest를 미리 가져옵니다.',
@@ -390,7 +390,7 @@ export const dockerInstallMessages = {
         'Docker Hub に安定して接続できる環境では、kcilnk/fn-knock リポジトリから直接取得します。',
       quickInstallTitle: '一括インストール',
       quickInstallDescription:
-        '以下のスクリプト全体を対象 Linux ホストの root ターミナルへ貼り付けます。IPv6 bridge を作成し、ホストの IPv6 インターフェイス情報を読み取り専用でマウントして fn-knock を起動します。',
+        '対象 Linux ホストの root ターミナルへスクリプト全体を貼り付けます。IPv6 インターフェイス表を読み、グローバル IPv6 を確認してから bridge を作成し fn-knock を起動します。',
       quickInstallSource: '選択中のイメージ',
       quickInstallTerminal: 'Root ターミナル',
       quickInstallSafety:
@@ -398,7 +398,7 @@ export const dockerInstallMessages = {
       stepsTitle: '完全なインストール手順',
       requirementsTitle: 'Docker 環境を確認',
       requirementsDescription:
-        'Linux ホスト、Docker Engine、Docker Compose プラグインが必要です。ホストで IPv6 が有効で、/proc/net/if_inet6 が存在する必要があります。',
+        'Linux ホスト、Docker Engine、Docker Compose が必要です。/proc/net/if_inet6 は表示サイズが常に 0 の仮想ファイルなので、インストーラーはサイズではなく内容を読み取って判定します。',
       prepareTitle: 'ディレクトリを準備してイメージを取得',
       prepareDescription:
         '専用の作業ディレクトリを作成し、選択したソースから latest を取得します。',
