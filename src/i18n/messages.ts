@@ -1,8 +1,11 @@
+import { dockerInstallMessages } from './dockerMessages'
+
 export const zhCN = {
   meta: {
     description: 'fn-knock 敲门是一款面向 NAS、软路由与家庭服务器的多平台高性能安全网关。',
     home: 'fn-knock 敲门 · 多平台安全网关',
     linux: 'Linux 安装 · fn-knock 敲门',
+    docker: dockerInstallMessages.zhCN.meta,
     windows: 'Windows 安装 · fn-knock 敲门',
     synology: '群晖 Synology 安装 · fn-knock 敲门',
     legal: '用户协议与隐私政策 · fn-knock 敲门',
@@ -211,6 +214,7 @@ export const zhCN = {
     },
   },
   install: {
+    docker: dockerInstallMessages.zhCN.install,
     table: {
       listeningScope: '监听范围',
       browserAccess: '浏览器访问',
@@ -419,6 +423,7 @@ export const zhHant = {
     description: 'fn-knock 敲門是面向 NAS、軟路由與家庭伺服器的多平台高效能安全閘道。',
     home: 'fn-knock 敲門 · 多平台安全閘道',
     linux: 'Linux 安裝 · fn-knock 敲門',
+    docker: dockerInstallMessages.zhHant.meta,
     windows: 'Windows 安裝 · fn-knock 敲門',
     synology: '群暉 Synology 安裝 · fn-knock 敲門',
     legal: '使用者協議與隱私政策 · fn-knock 敲門',
@@ -620,6 +625,7 @@ export const zhHant = {
     },
   },
   install: {
+    docker: dockerInstallMessages.zhHant.install,
     table: {
       listeningScope: '監聽範圍',
       browserAccess: '瀏覽器存取',
@@ -808,6 +814,7 @@ export const en = {
       'fn-knock is a high-performance, multi-platform secure gateway for NAS devices, routers, and home servers.',
     home: 'fn-knock · Multi-platform Secure Gateway',
     linux: 'Install on Linux · fn-knock',
+    docker: dockerInstallMessages.en.meta,
     windows: 'Install on Windows · fn-knock',
     synology: 'Install on Synology · fn-knock',
     legal: 'Terms & Privacy Policy · fn-knock',
@@ -1014,6 +1021,7 @@ export const en = {
     },
   },
   install: {
+    docker: dockerInstallMessages.en.install,
     table: {
       listeningScope: 'Listening scope',
       browserAccess: 'Browser access',
@@ -1229,6 +1237,7 @@ export const koKR = {
     description: 'fn-knock은 NAS, 라우터와 홈 서버를 위한 멀티플랫폼 고성능 보안 게이트웨이입니다.',
     home: 'fn-knock · 멀티플랫폼 보안 게이트웨이',
     linux: 'Linux 설치 · fn-knock',
+    docker: dockerInstallMessages.koKR.meta,
     windows: 'Windows 설치 · fn-knock',
     synology: 'Synology 설치 · fn-knock',
     legal: '이용약관 및 개인정보 처리방침 · fn-knock',
@@ -1440,6 +1449,7 @@ export const koKR = {
     },
   },
   install: {
+    docker: dockerInstallMessages.koKR.install,
     table: {
       listeningScope: '수신 범위',
       browserAccess: '브라우저 접속',
@@ -1649,6 +1659,7 @@ export const jaJP = {
       'fn-knock は NAS、ルーター、ホームサーバー向けのマルチプラットフォーム高性能セキュアゲートウェイです。',
     home: 'fn-knock · マルチプラットフォーム・セキュアゲートウェイ',
     linux: 'Linux にインストール · fn-knock',
+    docker: dockerInstallMessages.jaJP.meta,
     windows: 'Windows にインストール · fn-knock',
     synology: 'Synology にインストール · fn-knock',
     legal: '利用規約とプライバシーポリシー · fn-knock',
@@ -1863,6 +1874,7 @@ export const jaJP = {
     },
   },
   install: {
+    docker: dockerInstallMessages.jaJP.install,
     table: {
       listeningScope: '待受範囲',
       browserAccess: 'ブラウザーアクセス',

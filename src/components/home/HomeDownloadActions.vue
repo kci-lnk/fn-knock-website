@@ -14,12 +14,7 @@ import dockerMark from '@/assets/docker-mark.svg'
 import fnOsLogo from '@/assets/fnos-logo.svg'
 import OpenWrtDownloadDialog from '@/components/home/OpenWrtDownloadDialog.vue'
 import { useDownloadMenu } from '@/composables/useDownloadMenu'
-import {
-  fnOsDownloads,
-  homeLinks,
-  openWrtDownloads,
-  resolveOpenWrtDownloadUrl,
-} from '@/config/home'
+import { fnOsDownloads, openWrtDownloads, resolveOpenWrtDownloadUrl } from '@/config/home'
 
 const componentId = useId()
 const { t } = useI18n()
@@ -229,10 +224,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="download-action-item relative min-w-0">
-        <a
-          :href="homeLinks.dockerHub"
-          target="_blank"
-          rel="noopener noreferrer"
+        <RouterLink
+          to="/docker"
           class="download-action-button download-action--docker h-12 w-full rounded-lg px-4 text-sm font-bold"
         >
           <span class="download-action-content">
@@ -242,7 +235,7 @@ onBeforeUnmount(() => {
               <span class="sm:hidden">Docker</span>
             </span>
           </span>
-        </a>
+        </RouterLink>
       </div>
 
       <div class="download-action-item relative min-w-0">

@@ -10,6 +10,8 @@ export const homeLinks = {
   amd64Download: downloadBaseUrl,
   arm64Download: createDownloadUrl({ arch: 'arm64' }),
   dockerHub: 'https://hub.docker.com/r/kcilnk/fn-knock',
+  dockerMirrorImage: 'hub.fnknock.cn/kcilnk/fn-knock:latest',
+  dockerHubImage: 'kcilnk/fn-knock:latest',
   tutorial: 'https://club.fnnas.com/forum.php?mod=viewthread&tid=61959',
 } as const
 

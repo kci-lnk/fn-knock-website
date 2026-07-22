@@ -2,7 +2,7 @@ import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { homeLinks, openWrtDownloads } from '@/config/home'
+import { openWrtDownloads } from '@/config/home'
 import HomeDownloadActions from './HomeDownloadActions.vue'
 
 let wrapper: VueWrapper | undefined
@@ -130,7 +130,7 @@ describe('HomeDownloadActions', () => {
       'https://get.fnknock.cn/',
       'https://get.fnknock.cn/?arch=arm64',
     ])
-    expect(mounted.get('.download-action--docker').attributes('href')).toBe(homeLinks.dockerHub)
+    expect(mounted.get('.download-action--docker').attributes('to')).toBe('/docker')
     expect(mounted.get('.download-action--synology').attributes('to')).toBe('/synology')
     expect(openWrtLinks).toHaveLength(openWrtDownloads.length * 2)
 
