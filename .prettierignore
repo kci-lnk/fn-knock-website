@@ -1,0 +1,13 @@
+dist
+node_modules
+server
+ecosystem.config.cjs
+.claude
+bun.lock
+coverage
+output
+public/sbom
+.DS_Store
+*.png
+*.ico
+*.avif
