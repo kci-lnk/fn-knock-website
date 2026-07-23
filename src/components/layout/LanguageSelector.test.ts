@@ -10,9 +10,11 @@ describe('LanguageSelector', () => {
 
     expect(trigger.text()).toBe('')
     expect(trigger.attributes('aria-expanded')).toBe('false')
+    expect(document.getElementById(trigger.attributes('aria-controls')!)).not.toBeNull()
+    expect(wrapper.get('.language-menu').isVisible()).toBe(false)
 
     await trigger.trigger('click')
-    const options = wrapper.findAll('[role="menuitemradio"]')
+    const options = wrapper.findAll('.language-menu button')
     expect(options.map((option) => option.text())).toEqual([
       '中文简体',
       '中文正體',
@@ -25,6 +27,7 @@ describe('LanguageSelector', () => {
     expect(document.documentElement.lang).toBe('en')
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('en')
     expect(trigger.attributes('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(trigger.element)
 
     wrapper.unmount()
   })

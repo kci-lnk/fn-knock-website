@@ -36,17 +36,22 @@ const { t } = useI18n()
         :aria-label="t('auth.close')"
         @click="$emit('close')"
       >
-        <X class="h-4 w-4" />
+        <X class="h-4 w-4" aria-hidden="true" />
       </button>
     </div>
     <div class="mt-5 space-y-4" :aria-busy="submitting">
-      <label class="flex items-center gap-2 text-sm font-medium text-slate-600"
-        ><input
+      <label
+        for="remember-login"
+        class="flex items-center gap-2 text-sm font-medium text-slate-600"
+      >
+        <input
+          id="remember-login"
           v-model="remember"
           type="checkbox"
           class="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
-        />{{ t('auth.remember') }}</label
-      >
+        />
+        {{ t('auth.remember') }}
+      </label>
       <p
         v-if="error"
         id="login-error"
@@ -59,10 +64,11 @@ const { t } = useI18n()
         id="qq-login-button"
         type="button"
         :disabled="submitting"
+        :aria-describedby="error ? 'login-error' : undefined"
         class="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#12b7f5] px-4 text-sm font-semibold text-white transition hover:bg-[#0aa8e4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#12b7f5] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         @click="$emit('qqLogin')"
       >
-        <MessageCircle class="h-4 w-4" />{{
+        <MessageCircle class="h-4 w-4" aria-hidden="true" />{{
           submitting ? t('auth.redirecting') : t('auth.continue')
         }}
       </button>

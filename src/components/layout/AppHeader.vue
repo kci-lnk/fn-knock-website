@@ -21,7 +21,7 @@ const { t } = useI18n()
       class="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-0"
     >
       <RouterLink to="/" class="flex min-w-0 items-center gap-3" :aria-label="t('header.home')">
-        <img :src="logo" alt="fn-knock logo" class="h-9 w-9" />
+        <img :src="logo" alt="" class="h-9 w-9" />
         <span
           class="brand-name hidden truncate text-base font-semibold tracking-tight text-slate-950 sm:inline"
           >{{ t('header.brand') }}</span
@@ -59,8 +59,10 @@ const { t } = useI18n()
         <span
           v-if="loading"
           class="h-9 w-20 animate-pulse rounded-full bg-slate-200/70"
-          :aria-label="t('header.loadingAuth')"
-        />
+          role="status"
+        >
+          <span class="sr-only">{{ t('header.loadingAuth') }}</span>
+        </span>
         <div
           v-else-if="user"
           class="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-2 py-1 shadow-sm"
@@ -76,7 +78,7 @@ const { t } = useI18n()
           }}</span>
           <button
             type="button"
-            class="rounded-full px-2 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            class="min-h-7 rounded-full px-2 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
             @click="$emit('logout')"
           >
             {{ t('header.logout') }}

@@ -75,10 +75,29 @@ const router = createRouter({
   },
 })
 
-router.afterEach(() => {
-  void nextTick(() =>
-    document.querySelector<HTMLElement>('#main-content')?.focus({ preventScroll: true }),
-  )
+router.afterEach((to) => {
+  void nextTick(() => {
+    const previousTarget = document.querySelector<HTMLElement>('[data-router-focus]')
+    previousTarget?.removeAttribute('tabindex')
+    previousTarget?.removeAttribute('data-router-focus')
+
+    let hashTarget: HTMLElement | null = null
+    if (to.hash) {
+      try {
+        hashTarget = document.getElementById(decodeURIComponent(to.hash.slice(1)))
+      } catch {
+        hashTarget = document.getElementById(to.hash.slice(1))
+      }
+    }
+    const focusTarget = hashTarget ?? document.querySelector<HTMLElement>('#main-content')
+    if (!focusTarget) return
+
+    if (hashTarget && !hashTarget.matches('[tabindex]')) {
+      hashTarget.setAttribute('tabindex', '-1')
+      hashTarget.setAttribute('data-router-focus', '')
+    }
+    focusTarget.focus({ preventScroll: true })
+  })
 })
 
 export default router

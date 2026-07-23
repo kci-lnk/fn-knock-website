@@ -564,3 +564,10 @@
     transition: none;
   }
 }
+
+@media (forced-colors: active) {
+  .synology-hero h1 {
+    background: none;
+    color: CanvasText;
+  }
+}

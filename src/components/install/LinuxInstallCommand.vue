@@ -62,6 +62,7 @@ const selectCommand = (method: CommandMethod) => {
     </div>
     <div
       class="command-body overflow-x-auto"
+      role="region"
       tabindex="0"
       :aria-label="t('install.linux.currentCommand')"
     >

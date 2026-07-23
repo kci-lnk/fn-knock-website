@@ -494,11 +494,21 @@ const resetPanelPasswordCommand =
           :caption="t('install.docker.portsCaption')"
         />
         <ol class="first-run-list">
-          <li>{{ t('install.docker.firstRun1') }}</li>
-          <li>{{ t('install.docker.firstRun2') }}</li>
-          <li>{{ t('install.docker.firstRun3') }}</li>
-          <li>{{ t('install.docker.firstRun4') }}</li>
-          <li>{{ t('install.docker.firstRun5') }}</li>
+          <li>
+            <span>{{ t('install.docker.firstRun1') }}</span>
+          </li>
+          <li>
+            <span>{{ t('install.docker.firstRun2') }}</span>
+          </li>
+          <li>
+            <span>{{ t('install.docker.firstRun3') }}</span>
+          </li>
+          <li>
+            <span>{{ t('install.docker.firstRun4') }}</span>
+          </li>
+          <li>
+            <span>{{ t('install.docker.firstRun5') }}</span>
+          </li>
         </ol>
       </section>
 
@@ -813,6 +823,10 @@ const resetPanelPasswordCommand =
   gap: 0.8rem;
   grid-template-columns: 2rem minmax(0, 1fr);
   line-height: 1.75;
+}
+.first-run-list li > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .first-run-list li::before {
   color: #99938a;

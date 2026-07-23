@@ -30,6 +30,7 @@ watch(source, reset)
       </button>
     </div>
     <pre
+      role="region"
       tabindex="0"
       :aria-label="t('install.docker.codeBlockLabel', { title })"
     ><code>{{ code }}</code></pre>

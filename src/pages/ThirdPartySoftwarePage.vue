@@ -145,7 +145,7 @@ onMounted(async () => {
       <section class="inventory" aria-labelledby="inventory-title">
         <div class="inventory-heading">
           <h2 id="inventory-title">{{ t('sbom.inventory') }}</h2>
-          <p>
+          <p role="status" aria-live="polite">
             {{
               t('sbom.matches', {
                 count: filteredComponents.length.toLocaleString(locale),
@@ -154,22 +154,27 @@ onMounted(async () => {
           </p>
         </div>
 
-        <div class="filters" :aria-label="t('sbom.filters')">
-          <label class="search-field">
+        <form class="filters" role="search" :aria-label="t('sbom.filters')" @submit.prevent>
+          <label for="component-search" class="search-field">
             <span class="sr-only">{{ t('sbom.search') }}</span>
-            <input v-model="search" type="search" :placeholder="t('sbom.searchPlaceholder')" />
+            <input
+              id="component-search"
+              v-model="search"
+              type="search"
+              :placeholder="t('sbom.searchPlaceholder')"
+            />
           </label>
-          <label class="select-field">
+          <label for="ecosystem-filter" class="select-field">
             <span class="sr-only">{{ t('sbom.ecosystemFilter') }}</span>
-            <select v-model="ecosystem">
+            <select id="ecosystem-filter" v-model="ecosystem">
               <option value="all">{{ t('sbom.allEcosystems') }}</option>
               <option v-for="item in ecosystems" :key="item" :value="item">{{ item }}</option>
             </select>
             <ChevronDown aria-hidden="true" />
           </label>
-          <label class="select-field">
+          <label for="scope-filter" class="select-field">
             <span class="sr-only">{{ t('sbom.scopeFilter') }}</span>
-            <select v-model="scope">
+            <select id="scope-filter" v-model="scope">
               <option value="all">{{ t('sbom.allScopes') }}</option>
               <option value="runtime">{{ t('sbom.runtime') }}</option>
               <option value="build">{{ t('sbom.build') }}</option>
@@ -179,16 +184,16 @@ onMounted(async () => {
             </select>
             <ChevronDown aria-hidden="true" />
           </label>
-          <label class="select-field">
+          <label for="relationship-filter" class="select-field">
             <span class="sr-only">{{ t('sbom.relationshipFilter') }}</span>
-            <select v-model="relationship">
+            <select id="relationship-filter" v-model="relationship">
               <option value="all">{{ t('sbom.allRelationships') }}</option>
               <option value="direct">{{ t('sbom.directDependency') }}</option>
               <option value="transitive">{{ t('sbom.transitiveDependency') }}</option>
             </select>
             <ChevronDown aria-hidden="true" />
           </label>
-        </div>
+        </form>
 
         <div v-if="loadError" class="load-error" role="alert">
           <div>
@@ -198,19 +203,22 @@ onMounted(async () => {
         </div>
 
         <div v-else class="table-frame">
-          <div class="table-scroll">
+          <div class="table-scroll" role="region" aria-labelledby="inventory-title" tabindex="0">
             <table>
+              <caption class="sr-only">
+                {{
+                  t('sbom.inventory')
+                }}
+              </caption>
               <thead>
                 <tr>
-                  <th>{{ t('sbom.project') }}</th>
-                  <th>{{ t('sbom.version') }}</th>
-                  <th>{{ t('sbom.ecosystem') }}</th>
-                  <th>{{ t('sbom.license') }}</th>
-                  <th>{{ t('sbom.scope') }}</th>
-                  <th>{{ t('sbom.relationship') }}</th>
-                  <th>
-                    <span class="sr-only">{{ t('sbom.source') }}</span>
-                  </th>
+                  <th scope="col">{{ t('sbom.project') }}</th>
+                  <th scope="col">{{ t('sbom.version') }}</th>
+                  <th scope="col">{{ t('sbom.ecosystem') }}</th>
+                  <th scope="col">{{ t('sbom.license') }}</th>
+                  <th scope="col">{{ t('sbom.scope') }}</th>
+                  <th scope="col">{{ t('sbom.relationship') }}</th>
+                  <th scope="col" :aria-label="t('sbom.source')"></th>
                 </tr>
               </thead>
               <tbody>
@@ -276,7 +284,7 @@ onMounted(async () => {
           </div>
 
           <div class="pagination">
-            <p>
+            <p role="status" aria-live="polite">
               {{
                 t('sbom.pagination', {
                   first: firstVisible,
@@ -479,6 +487,12 @@ onMounted(async () => {
 
 .table-scroll {
   overflow-x: auto;
+  outline: none;
+}
+
+.table-scroll:focus-visible {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 28%, transparent);
 }
 
 table {

@@ -1,6 +1,7 @@
 import js from '@eslint/js'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import pluginVue from 'eslint-plugin-vue'
+import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -11,6 +12,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
+  ...vuejsAccessibility.configs['flat/recommended'],
   {
     files: ['src/**/*.{ts,vue}'],
     languageOptions: {
@@ -27,6 +29,11 @@ export default tseslint.config(
       parserOptions: {
         parser: tseslint.parser,
       },
+    },
+    rules: {
+      'vuejs-accessibility/no-aria-hidden-on-focusable': 'error',
+      'vuejs-accessibility/no-onchange': 'error',
+      'vuejs-accessibility/no-role-presentation-on-focusable': 'error',
     },
   },
   {

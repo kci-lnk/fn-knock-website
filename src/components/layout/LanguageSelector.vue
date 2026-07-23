@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from 'vue'
 import { Check, Languages } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { LOCALE_OPTIONS, setLocale, type LocaleCode } from '@/i18n'
 
 withDefaults(defineProps<{ tone?: 'light' | 'dark' }>(), { tone: 'light' })
 const { locale, t } = useI18n()
+const componentId = useId()
+const optionsId = `${componentId}-language-options`
 const open = ref(false)
 const root = useTemplateRef<HTMLElement>('root')
+const trigger = useTemplateRef<HTMLButtonElement>('trigger')
 const currentLocaleLabel = computed(
   () => LOCALE_OPTIONS.find((item) => item.code === locale.value)?.label ?? locale.value,
 )
 
-const chooseLocale = (nextLocale: LocaleCode) => {
+const chooseLocale = async (nextLocale: LocaleCode) => {
   setLocale(nextLocale)
   open.value = false
+  await nextTick()
+  trigger.value?.focus()
 }
 
 const handleDocumentClick = (event: MouseEvent) => {
@@ -24,7 +29,7 @@ const handleDocumentClick = (event: MouseEvent) => {
 const handleEscape = (event: KeyboardEvent) => {
   if (event.key !== 'Escape' || !open.value) return
   open.value = false
-  root.value?.querySelector<HTMLButtonElement>('.language-trigger')?.focus()
+  trigger.value?.focus()
 }
 
 onMounted(() => {
@@ -41,31 +46,31 @@ onBeforeUnmount(() => {
 <template>
   <div ref="root" class="language-selector relative" :class="`language-selector--${tone}`">
     <button
+      ref="trigger"
       type="button"
       class="language-trigger"
       :title="t('locale.label')"
       :aria-label="t('locale.current', { language: currentLocaleLabel })"
-      aria-haspopup="menu"
+      :aria-controls="optionsId"
       :aria-expanded="open"
       @click.stop="open = !open"
     >
       <Languages class="h-4 w-4 shrink-0" aria-hidden="true" />
     </button>
     <Transition name="language-menu">
-      <div v-if="open" class="language-menu" role="menu" :aria-label="t('locale.label')">
-        <button
-          v-for="option in LOCALE_OPTIONS"
-          :key="option.code"
-          type="button"
-          role="menuitemradio"
-          :aria-checked="locale === option.code"
-          :lang="option.code"
-          @click="chooseLocale(option.code)"
-        >
-          <span>{{ option.label }}</span>
-          <Check v-if="locale === option.code" class="h-4 w-4" aria-hidden="true" />
-        </button>
-      </div>
+      <ul v-show="open" :id="optionsId" class="language-menu" :aria-label="t('locale.label')">
+        <li v-for="option in LOCALE_OPTIONS" :key="option.code">
+          <button
+            type="button"
+            :aria-current="locale === option.code ? 'true' : undefined"
+            :lang="option.code"
+            @click="chooseLocale(option.code)"
+          >
+            <span>{{ option.label }}</span>
+            <Check v-if="locale === option.code" class="h-4 w-4" aria-hidden="true" />
+          </button>
+        </li>
+      </ul>
     </Transition>
   </div>
 </template>
@@ -128,7 +133,7 @@ onBeforeUnmount(() => {
   color: #eff8ff;
 }
 
-.language-selector--dark .language-menu button[aria-checked='true'] {
+.language-selector--dark .language-menu button[aria-current='true'] {
   color: #70d0ff;
 }
 
@@ -138,6 +143,8 @@ onBeforeUnmount(() => {
   border-radius: 0.75rem;
   box-shadow: 0 18px 50px rgb(15 23 42 / 0.14);
   min-width: 10.5rem;
+  list-style: none;
+  margin: 0;
   overflow: hidden;
   padding: 0.35rem;
   position: absolute;
@@ -168,7 +175,7 @@ onBeforeUnmount(() => {
   outline: none;
 }
 
-.language-menu button[aria-checked='true'] {
+.language-menu button[aria-current='true'] {
   color: #1d4ed8;
 }
 

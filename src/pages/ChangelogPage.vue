@@ -22,7 +22,7 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
         <p class="changelog-lead">{{ t('changelog.description') }}</p>
 
         <div class="changelog-meta">
-          <p class="current-release" :aria-label="t('changelog.currentVersion', { version })">
+          <p class="current-release">
             <span class="status-dot" aria-hidden="true" />
             <span>{{ t('changelog.latest') }}</span>
             <strong>v{{ version }}</strong>

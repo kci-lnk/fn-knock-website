@@ -1,7 +1,7 @@
 <template>
   <div class="legal-page">
     <div class="legal-shell">
-      <div class="legal-toolbar" :aria-label="t('legal.toolbar')">
+      <div class="legal-toolbar" role="group" :aria-label="t('legal.toolbar')">
         <RouterLink class="legal-back" :to="{ name: 'home' }">
           <ArrowLeft aria-hidden="true" />
           {{ t('common.backWebsite') }}
@@ -18,7 +18,7 @@
       </div>
       <section class="legal-hero" aria-labelledby="legal-title">
         <h1 id="legal-title">{{ t('legal.title') }}</h1>
-        <div class="legal-meta" :aria-label="t('legal.documentInfo')">
+        <div class="legal-meta" role="group" :aria-label="t('legal.documentInfo')">
           <span>{{ t('legal.version') }}</span>
           <span>{{ t('legal.updated') }}</span>
           <span>{{ t('legal.effective') }}</span>
@@ -405,15 +405,23 @@
             </p>
 
             <h3 id="privacy-matrix">3. 发送至官方在线服务的信息</h3>
-            <div class="table-wrap" tabindex="0" aria-label="官方联网服务信息处理清单，可横向滚动">
+            <div
+              class="table-wrap"
+              role="region"
+              tabindex="0"
+              aria-label="官方联网服务信息处理清单，可横向滚动"
+            >
               <table>
+                <caption class="sr-only">
+                  官方联网服务信息处理清单
+                </caption>
                 <thead>
                   <tr>
-                    <th>场景与触发</th>
-                    <th>发送或可见的信息</th>
-                    <th>目的与必要性</th>
-                    <th>默认状态与控制</th>
-                    <th>保存与删除</th>
+                    <th scope="col">场景与触发</th>
+                    <th scope="col">发送或可见的信息</th>
+                    <th scope="col">目的与必要性</th>
+                    <th scope="col">默认状态与控制</th>
+                    <th scope="col">保存与删除</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -622,14 +630,22 @@
               托管 QQ OIDC provider 当前采用 OAuth 2.0 Authorization Code、PKCE S256、nonce、一次性
               state 和成对化 subject。应用层临时数据的当前默认期限如下：
             </p>
-            <div class="table-wrap" tabindex="0" aria-label="QQ OIDC 临时数据期限，可横向滚动">
+            <div
+              class="table-wrap"
+              role="region"
+              tabindex="0"
+              aria-label="QQ OIDC 临时数据期限，可横向滚动"
+            >
               <table>
+                <caption class="sr-only">
+                  QQ OIDC 临时数据期限
+                </caption>
                 <thead>
                   <tr>
-                    <th>数据</th>
-                    <th>内容</th>
-                    <th>当前默认期限</th>
-                    <th>到期或删除方式</th>
+                    <th scope="col">数据</th>
+                    <th scope="col">内容</th>
+                    <th scope="col">当前默认期限</th>
+                    <th scope="col">到期或删除方式</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -689,14 +705,22 @@
             <p>
               以下信息通常保存在部署管理员的设备中，不会仅因运行软件而自动同步给项目方。实际字段和期限由版本、配置及管理员操作决定：
             </p>
-            <div class="table-wrap" tabindex="0" aria-label="本地处理信息清单，可横向滚动">
+            <div
+              class="table-wrap"
+              role="region"
+              tabindex="0"
+              aria-label="本地处理信息清单，可横向滚动"
+            >
               <table>
+                <caption class="sr-only">
+                  本地处理信息清单
+                </caption>
                 <thead>
                   <tr>
-                    <th>类别</th>
-                    <th>示例</th>
-                    <th>主要目的</th>
-                    <th>默认或典型期限</th>
+                    <th scope="col">类别</th>
+                    <th scope="col">示例</th>
+                    <th scope="col">主要目的</th>
+                    <th scope="col">默认或典型期限</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -999,14 +1023,22 @@
             </ol>
 
             <h3 id="privacy-endpoints">15. 官方服务端点附录</h3>
-            <div class="table-wrap" tabindex="0" aria-label="官方服务端点清单，可横向滚动">
+            <div
+              class="table-wrap"
+              role="region"
+              tabindex="0"
+              aria-label="官方服务端点清单，可横向滚动"
+            >
               <table>
+                <caption class="sr-only">
+                  官方服务端点清单
+                </caption>
                 <thead>
                   <tr>
-                    <th>端点</th>
-                    <th>用途</th>
-                    <th>主要信息</th>
-                    <th>是否可选</th>
+                    <th scope="col">端点</th>
+                    <th scope="col">用途</th>
+                    <th scope="col">主要信息</th>
+                    <th scope="col">是否可选</th>
                   </tr>
                 </thead>
                 <tbody>

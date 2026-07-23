@@ -111,6 +111,7 @@ onBeforeUnmount(() => {
           <div
             v-show="activeDownloadMenu === 'fnos'"
             :id="fnOsPanelId"
+            role="group"
             :aria-labelledby="fnOsTriggerId"
             class="download-menu absolute left-1/2 z-50 mt-3 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
           >
@@ -150,7 +151,9 @@ onBeforeUnmount(() => {
           :id="openWrtTriggerId"
           type="button"
           class="download-action-button download-action--openwrt h-12 w-full rounded-lg px-4 text-sm font-bold"
-          :aria-controls="isMobileOpenWrt ? openWrtDialogId : openWrtPanelId"
+          :aria-controls="
+            isMobileOpenWrt ? (isOpenWrtDialogOpen ? openWrtDialogId : undefined) : openWrtPanelId
+          "
           :aria-expanded="isMobileOpenWrt ? isOpenWrtDialogOpen : activeDownloadMenu === 'openwrt'"
           :aria-haspopup="isMobileOpenWrt ? 'dialog' : undefined"
           @click.stop="handleOpenWrtButtonClick"
@@ -177,6 +180,7 @@ onBeforeUnmount(() => {
           <div
             v-show="activeDownloadMenu === 'openwrt' && !isMobileOpenWrt"
             :id="openWrtPanelId"
+            role="group"
             :aria-labelledby="openWrtTriggerId"
             class="download-menu openwrt-download-menu absolute left-1/2 z-50 mt-3 w-[min(48rem,calc(100vw-2rem))] overflow-visible rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
           >

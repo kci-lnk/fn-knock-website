@@ -117,7 +117,7 @@ const {
                 ><span class="tab-label">{{ t('home.architecture.events') }}</span
                 ><span class="tab-label">{{ t('home.architecture.performance') }}</span>
               </div>
-              <div class="time-segment" :aria-label="t('home.architecture.timeRange')">
+              <div class="time-segment" role="group" :aria-label="t('home.architecture.timeRange')">
                 <span class="is-active">{{ t('home.architecture.min15') }}</span
                 ><span>{{ t('home.architecture.min30') }}</span
                 ><span>{{ t('home.architecture.hour6') }}</span
@@ -179,7 +179,11 @@ const {
                     >
                   </div>
                 </div>
-                <div class="telemetry-chart mt-6" :aria-label="t('home.architecture.chartLabel')">
+                <div
+                  class="telemetry-chart mt-6"
+                  role="img"
+                  :aria-label="t('home.architecture.chartLabel')"
+                >
                   <span
                     v-for="(bar, index) in trafficBars"
                     :key="index"

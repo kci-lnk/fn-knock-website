@@ -150,16 +150,17 @@ describe('HomeDownloadActions', () => {
     const mounted = mountDownloadActions()
     await nextTick()
     const openWrtTrigger = mounted.get('.download-action--openwrt')
-    const dialogId = openWrtTrigger.attributes('aria-controls')
 
     expect(openWrtTrigger.attributes('aria-haspopup')).toBe('dialog')
     expect(openWrtTrigger.attributes('aria-expanded')).toBe('false')
-    expect(dialogId).toBeTruthy()
+    expect(openWrtTrigger.attributes('aria-controls')).toBeUndefined()
 
     await openWrtTrigger.trigger('click')
     await nextTick()
     await flushPromises()
 
+    const dialogId = openWrtTrigger.attributes('aria-controls')
+    expect(dialogId).toBeTruthy()
     const dialog = document.getElementById(dialogId!)
     expect(dialog?.getAttribute('role')).toBe('dialog')
     expect(openWrtTrigger.attributes('aria-expanded')).toBe('true')

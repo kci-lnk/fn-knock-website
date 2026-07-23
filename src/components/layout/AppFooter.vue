@@ -30,7 +30,7 @@ const copyStatus = computed(() => {
       class="footer-inner mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 text-sm sm:px-6 md:flex-row md:items-center md:justify-between"
     >
       <div class="flex items-center gap-3">
-        <img :src="logo" alt="fn-knock logo" class="h-9 w-9" />
+        <img :src="logo" alt="" class="h-9 w-9" />
         <div>
           <p class="font-medium">{{ t('header.brandFull') }}</p>
           <p class="text-muted-foreground">{{ t('footer.description') }}</p>
@@ -46,7 +46,7 @@ const copyStatus = computed(() => {
           >
           <button
             type="button"
-            class="font-medium text-foreground transition-opacity hover:opacity-70"
+            class="min-h-6 font-medium text-foreground transition-opacity hover:opacity-70"
             @click="copyGroupNumber"
           >
             {{ copied ? t('footer.copied') : t('footer.copyGroup') }}

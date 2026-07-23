@@ -68,9 +68,9 @@ const { version } = useLatestRelease()
             </span>
           </div>
 
-          <h3 class="mt-4 text-lg font-bold tracking-tight text-slate-950">
+          <h2 class="mt-4 text-lg font-bold tracking-tight text-slate-950">
             {{ t(`home.stats.${card.id}.title`) }}
-          </h3>
+          </h2>
           <p class="mt-2 text-sm leading-6 text-slate-500">
             {{ t(`home.stats.${card.id}.description`) }}
           </p>
@@ -219,6 +219,12 @@ const { version } = useLatestRelease()
   .release-pill,
   .tutorial-link {
     transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .animated-title-gradient {
+    background: none;
+    color: CanvasText;
   }
 }
 </style>
