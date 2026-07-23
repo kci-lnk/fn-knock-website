@@ -55,6 +55,9 @@ describe('DockerInstallPage', () => {
     const wrapper = mountPage()
     const hostCommand = wrapper.get('[data-testid="quick-install-command"]').text()
 
+    expect(wrapper.findAll('.deployment-options')).toHaveLength(1)
+    expect(wrapper.findAll('.option-row')).toHaveLength(2)
+    expect(wrapper.findAll('.source-panel')).toHaveLength(0)
     for (const port of ['7991', '7999', '7998', '7997', '7996']) {
       expect(wrapper.text()).toContain(port)
     }

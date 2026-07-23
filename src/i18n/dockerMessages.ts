@@ -7,6 +7,8 @@ export const dockerInstallMessages = {
       intro:
         '选择适合当前网络的镜像来源，复制完整的 Compose 配置，即可在 Linux 主机或基于 Linux 的 NAS 上运行 fn-knock。',
       dockerHubLink: '查看原始 Docker Hub 页面',
+      optionsTitle: '部署选项',
+      optionsDescription: '选择镜像源和网络模式，下方安装命令与配置会同步更新。',
       sourceLabel: '选择镜像来源',
       sourceTitle: '镜像源',
       sourceIntro: '切换来源后，下方拉取命令和 .env 会自动更新。',
@@ -112,6 +114,8 @@ export const dockerInstallMessages = {
       intro:
         '選擇適合目前網路的映像來源，複製完整的 Compose 設定，即可在 Linux 主機或基於 Linux 的 NAS 上執行 fn-knock。',
       dockerHubLink: '查看原始 Docker Hub 頁面',
+      optionsTitle: '部署選項',
+      optionsDescription: '選擇映像來源和網路模式，下方安裝指令與設定會同步更新。',
       sourceLabel: '選擇映像來源',
       sourceTitle: '映像來源',
       sourceIntro: '切換來源後，下方拉取指令和 .env 會自動更新。',
@@ -217,6 +221,9 @@ export const dockerInstallMessages = {
       intro:
         'Choose the image source that works best on your network, then use the complete Compose setup to run fn-knock on a Linux host or Linux-based NAS.',
       dockerHubLink: 'Open the original Docker Hub page',
+      optionsTitle: 'Deployment options',
+      optionsDescription:
+        'Choose an image source and network mode. The installation command and configuration below update together.',
       sourceLabel: 'Choose an image source',
       sourceTitle: 'Image source',
       sourceIntro: 'Switching sources automatically updates the pull command and .env below.',
@@ -333,6 +340,9 @@ export const dockerInstallMessages = {
       intro:
         '현재 네트워크에 맞는 이미지 소스를 선택하고 전체 Compose 설정을 사용하여 Linux 호스트 또는 Linux 기반 NAS에서 fn-knock을 실행하세요.',
       dockerHubLink: '원본 Docker Hub 페이지 보기',
+      optionsTitle: '배포 옵션',
+      optionsDescription:
+        '이미지 소스와 네트워크 모드를 선택하면 아래 설치 명령과 설정이 함께 업데이트됩니다.',
       sourceLabel: '이미지 소스 선택',
       sourceTitle: '이미지 소스',
       sourceIntro: '소스를 전환하면 아래 pull 명령과 .env가 자동으로 변경됩니다.',
@@ -449,6 +459,9 @@ export const dockerInstallMessages = {
       intro:
         'ネットワークに適したイメージソースを選択し、完全な Compose 設定を使用して Linux ホストまたは Linux ベースの NAS で fn-knock を実行します。',
       dockerHubLink: '元の Docker Hub ページを開く',
+      optionsTitle: 'デプロイ設定',
+      optionsDescription:
+        'イメージソースとネットワークモードを選択すると、下のインストールコマンドと設定が連動して更新されます。',
       sourceLabel: 'イメージソースを選択',
       sourceTitle: 'イメージソース',
       sourceIntro: 'ソースを切り替えると、下の pull コマンドと .env が自動的に更新されます。',

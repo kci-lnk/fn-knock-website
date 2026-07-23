@@ -310,58 +310,78 @@ const resetPanelPasswordCommand =
         </a>
       </header>
 
-      <section class="source-panel mt-12 max-w-5xl" aria-labelledby="docker-source-title">
-        <div class="source-heading">
-          <h2 id="docker-source-title">{{ t('install.docker.sourceTitle') }}</h2>
-        </div>
-        <div class="source-switch" role="group" :aria-label="t('install.docker.sourceLabel')">
-          <button
-            v-for="option in sourceOptions"
-            :key="option.id"
-            type="button"
-            class="source-option"
-            :class="{ 'is-active': activeSource === option.id }"
-            :data-source="option.id"
-            :aria-pressed="activeSource === option.id"
-            @click="activeSource = option.id"
-          >
-            <span>{{ option.label }}</span>
-            <small>{{ option.hostname }}</small>
-          </button>
-        </div>
+      <section
+        class="deployment-options mt-12 max-w-5xl"
+        aria-labelledby="deployment-options-title"
+      >
+        <header class="options-heading">
+          <h2 id="deployment-options-title">{{ t('install.docker.optionsTitle') }}</h2>
+          <p>{{ t('install.docker.optionsDescription') }}</p>
+        </header>
 
-        <div class="source-summary" aria-live="polite">
-          <p>{{ activeSourceOption?.description }}</p>
-          <code data-testid="selected-image">{{ image }}</code>
-        </div>
-      </section>
+        <div class="option-stack">
+          <article class="option-row" aria-labelledby="docker-source-title">
+            <div class="option-heading">
+              <h3 id="docker-source-title">{{ t('install.docker.sourceTitle') }}</h3>
+            </div>
+            <div class="option-body">
+              <div class="source-switch" role="group" :aria-label="t('install.docker.sourceLabel')">
+                <button
+                  v-for="option in sourceOptions"
+                  :key="option.id"
+                  type="button"
+                  class="source-option"
+                  :class="{ 'is-active': activeSource === option.id }"
+                  :data-source="option.id"
+                  :aria-pressed="activeSource === option.id"
+                  @click="activeSource = option.id"
+                >
+                  <span>{{ option.label }}</span>
+                  <small>{{ option.hostname }}</small>
+                </button>
+              </div>
 
-      <section class="source-panel mt-8 max-w-5xl" aria-labelledby="docker-network-title">
-        <div class="source-heading">
-          <h2 id="docker-network-title">{{ t('install.docker.networkTitle') }}</h2>
-        </div>
-        <div class="source-switch" role="group" :aria-label="t('install.docker.networkLabel')">
-          <button
-            v-for="option in networkOptions"
-            :key="option.id"
-            type="button"
-            class="source-option"
-            :class="{ 'is-active': activeNetwork === option.id }"
-            :data-network="option.id"
-            :aria-pressed="activeNetwork === option.id"
-            @click="activeNetwork = option.id"
-          >
-            <span>{{ option.label }}</span>
-            <small>{{ option.hostname }}</small>
-          </button>
-        </div>
+              <div class="source-summary" aria-live="polite">
+                <p>{{ activeSourceOption?.description }}</p>
+                <code data-testid="selected-image">{{ image }}</code>
+              </div>
+            </div>
+          </article>
 
-        <div class="source-summary" aria-live="polite">
-          <p>{{ activeNetworkOption?.description }}</p>
-          <p v-if="activeNetwork === 'bridge'" class="network-warning">
-            {{ t('install.docker.bridgeNetworkWarning') }}
-          </p>
-          <code data-testid="selected-network">{{ activeNetworkOption?.hostname }}</code>
+          <article class="option-row" aria-labelledby="docker-network-title">
+            <div class="option-heading">
+              <h3 id="docker-network-title">{{ t('install.docker.networkTitle') }}</h3>
+            </div>
+            <div class="option-body">
+              <div
+                class="source-switch"
+                role="group"
+                :aria-label="t('install.docker.networkLabel')"
+              >
+                <button
+                  v-for="option in networkOptions"
+                  :key="option.id"
+                  type="button"
+                  class="source-option"
+                  :class="{ 'is-active': activeNetwork === option.id }"
+                  :data-network="option.id"
+                  :aria-pressed="activeNetwork === option.id"
+                  @click="activeNetwork = option.id"
+                >
+                  <span>{{ option.label }}</span>
+                  <small>{{ option.hostname }}</small>
+                </button>
+              </div>
+
+              <div class="source-summary" aria-live="polite">
+                <p>{{ activeNetworkOption?.description }}</p>
+                <p v-if="activeNetwork === 'bridge'" class="network-warning">
+                  {{ t('install.docker.bridgeNetworkWarning') }}
+                </p>
+                <code data-testid="selected-network">{{ activeNetworkOption?.hostname }}</code>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -531,15 +551,12 @@ const resetPanelPasswordCommand =
   color: #075985;
   text-decoration-color: #0ea5e9;
 }
-.source-panel {
-  border-bottom: 1px solid #d8d4cc;
-  border-top: 1px solid #827d74;
-  padding: 1.6rem 0.25rem 1.75rem;
+.deployment-options {
+  background: #f6f5f2;
+  border-radius: 0.75rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
 }
-.source-heading {
-  max-width: 42rem;
-}
-.source-heading h2,
+.options-heading h2,
 .steps-heading h2,
 .after-install h2,
 .update-section h2,
@@ -549,15 +566,44 @@ const resetPanelPasswordCommand =
   font-weight: 650;
   letter-spacing: -0.035em;
 }
+.options-heading p {
+  color: #77726a;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  margin-top: 0.45rem;
+  max-width: 42rem;
+}
+.option-stack {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.option-row {
+  background: #fff;
+  border-radius: 0.55rem;
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+  grid-template-columns: minmax(7rem, 9rem) minmax(0, 1fr);
+  padding: 1.25rem;
+}
+.option-heading h3 {
+  color: #35332f;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  padding-top: 0.72rem;
+}
+.option-body {
+  min-width: 0;
+}
 .source-switch {
   border: 1px solid #c9c4bc;
   border-radius: 0.4rem;
   display: grid;
   flex-shrink: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 1.35rem;
   overflow: hidden;
-  width: min(100%, 28rem);
+  width: min(100%, 34rem);
 }
 .source-option {
   align-items: flex-start;
@@ -603,24 +649,25 @@ const resetPanelPasswordCommand =
   outline-offset: 3px;
 }
 .source-summary {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 .source-summary p {
   color: #6b747a;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   line-height: 1.7;
-  margin-top: 0.35rem;
+  max-width: 44rem;
 }
 .source-summary .network-warning {
   color: #9a5a16;
   font-weight: 600;
+  margin-top: 0.35rem;
 }
 .source-summary code {
   color: #075985;
   display: block;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  margin-top: 0.65rem;
+  font-size: 0.7rem;
+  margin-top: 0.45rem;
   overflow-wrap: anywhere;
 }
 .quick-install {
@@ -788,6 +835,18 @@ const resetPanelPasswordCommand =
   margin-top: 0.85rem;
 }
 @media (max-width: 520px) {
+  .deployment-options {
+    border-radius: 0.6rem;
+    padding: 0.9rem;
+  }
+  .option-row {
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1rem;
+  }
+  .option-heading h3 {
+    padding-top: 0;
+  }
   .source-switch {
     width: 100%;
   }
