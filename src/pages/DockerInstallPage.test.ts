@@ -51,30 +51,41 @@ describe('DockerInstallPage', () => {
     expect(wrapper.text()).toContain('fn_knock_gateway:/usr/local/etc/fn-knock')
   })
 
-  it('documents IPv6 interface access, every current port, and trusted-proxy fallbacks', () => {
-    const text = mountPage().text()
-    const command = mountPage().get('[data-testid="quick-install-command"]').text()
+  it('defaults to host networking and can switch the complete setup to an IPv6 bridge', async () => {
+    const wrapper = mountPage()
+    const hostCommand = wrapper.get('[data-testid="quick-install-command"]').text()
 
     for (const port of ['7991', '7999', '7998', '7997', '7996']) {
-      expect(text).toContain(port)
+      expect(wrapper.text()).toContain(port)
     }
-    expect(text).toContain('DOCKER_ADMIN_TRUSTED_PROXY_CIDRS')
-    expect(text).toContain('DOCKER_DISCOVER_LAN_IP')
-    expect(text).toContain('FN_KNOCK_DOCKER_IPV6_SUBNET')
-    expect(command).toContain('enable_ipv6: true')
-    expect(command).toContain('DDNS_HOST_IF_INET6_PATH: /host/proc/net/if_inet6')
-    expect(command).toContain('source: /proc/net/if_inet6')
-    expect(command).toContain('target: /host/proc/net/if_inet6')
-    expect(command).toContain('read_only: true')
-    expect(command).not.toContain('network_mode: host')
+    expect(wrapper.text()).toContain('DOCKER_ADMIN_TRUSTED_PROXY_CIDRS')
+    expect(wrapper.text()).toContain('DOCKER_DISCOVER_LAN_IP')
+    expect(wrapper.get('[data-testid="selected-network"]').text()).toBe('network_mode: host')
+    expect(hostCommand).toContain('network_mode: host')
+    expect(hostCommand).not.toContain('ports:')
+    expect(hostCommand).not.toContain('enable_ipv6: true')
+    expect(hostCommand).not.toContain('FN_KNOCK_DOCKER_IPV6_SUBNET')
+    expect(hostCommand).not.toContain('/proc/net/if_inet6')
+
+    await wrapper.get('[data-network="bridge"]').trigger('click')
+    await nextTick()
+
+    const bridgeCommand = wrapper.get('[data-testid="quick-install-command"]').text()
+    expect(wrapper.get('[data-testid="selected-network"]').text()).toBe('Docker bridge')
+    expect(wrapper.text()).toContain('可能导致 DDNS 找不到宿主机网卡或 IPv6')
+    expect(bridgeCommand).not.toContain('network_mode: host')
+    expect(bridgeCommand).toContain('ports:')
+    expect(bridgeCommand).toContain('enable_ipv6: true')
+    expect(bridgeCommand).toContain('FN_KNOCK_DOCKER_IPV6_SUBNET')
+    expect(bridgeCommand).not.toContain('/proc/net/if_inet6')
+    expect(bridgeCommand).not.toContain('DDNS_HOST_IF_INET6_PATH')
   })
 
   it('provides a guarded one-paste installer without overwriting an existing setup', () => {
     const command = mountPage().get('[data-testid="quick-install-command"]').text()
 
     expect(command).toContain('install_dir=/opt/fn-knock-docker')
-    expect(command).toContain('awk \'$4 == "00"')
-    expect(command).not.toContain('[ -s /proc/net/if_inet6 ]')
+    expect(command).not.toContain('/proc/net/if_inet6')
     expect(command).toContain('if [ -e .env ] || [ -e docker-compose.yml ]')
     expect(command).toContain("cat > .env <<'FN_KNOCK_ENV'")
     expect(command).toContain("cat > docker-compose.yml <<'FN_KNOCK_COMPOSE'")

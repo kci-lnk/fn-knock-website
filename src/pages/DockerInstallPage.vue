@@ -9,9 +9,11 @@ import PortTable from '@/components/install/PortTable.vue'
 import { homeLinks } from '@/config/home'
 
 type RegistrySource = 'mirror' | 'dockerHub'
+type NetworkMode = 'host' | 'bridge'
 
 const { t } = useI18n()
 const activeSource = ref<RegistrySource>('mirror')
+const activeNetwork = ref<NetworkMode>('host')
 const image = computed(() =>
   activeSource.value === 'mirror' ? homeLinks.dockerMirrorImage : homeLinks.dockerHubImage,
 )
@@ -32,6 +34,23 @@ const sourceOptions = computed(() => [
 const activeSourceOption = computed(() =>
   sourceOptions.value.find((option) => option.id === activeSource.value),
 )
+const networkOptions = computed(() => [
+  {
+    id: 'host' as const,
+    label: t('install.docker.hostNetwork'),
+    hostname: 'network_mode: host',
+    description: t('install.docker.hostNetworkDescription'),
+  },
+  {
+    id: 'bridge' as const,
+    label: t('install.docker.bridgeNetwork'),
+    hostname: 'Docker bridge',
+    description: t('install.docker.bridgeNetworkDescription'),
+  },
+])
+const activeNetworkOption = computed(() =>
+  networkOptions.value.find((option) => option.id === activeNetwork.value),
+)
 
 const requirementsCommand = ['docker version', 'docker compose version'].join('\n')
 const prepareCommand = ['mkdir -p /opt/fn-knock-docker', 'cd /opt/fn-knock-docker'].join('\n')
@@ -45,8 +64,12 @@ const envFile = computed(() =>
     'AUTH_PORT=7997',
     'GO_BACKEND_PORT=7996',
     'GO_REPROXY_PORT=7999',
-    'FN_KNOCK_DOCKER_IPV4_SUBNET=172.30.0.0/16',
-    'FN_KNOCK_DOCKER_IPV6_SUBNET=fd42:fb33:7f7a:100::/64',
+    ...(activeNetwork.value === 'bridge'
+      ? [
+          'FN_KNOCK_DOCKER_IPV4_SUBNET=172.30.0.0/16',
+          'FN_KNOCK_DOCKER_IPV6_SUBNET=fd42:fb33:7f7a:100::/64',
+        ]
+      : []),
     'DOCKER_ADMIN_TRUSTED_PROXY_CIDRS=',
     'DOCKER_DISCOVER_LAN_IP=',
   ].join('\n'),
@@ -62,16 +85,20 @@ const configItems = computed(() => [
     value: '7991 / 7999',
     description: t('install.docker.publicPortsConfigDescription'),
   },
-  {
-    name: 'FN_KNOCK_DOCKER_IPV4_SUBNET',
-    value: '172.30.0.0/16',
-    description: t('install.docker.ipv4ConfigDescription'),
-  },
-  {
-    name: 'FN_KNOCK_DOCKER_IPV6_SUBNET',
-    value: 'fd42:fb33:7f7a:100::/64',
-    description: t('install.docker.ipv6ConfigDescription'),
-  },
+  ...(activeNetwork.value === 'bridge'
+    ? [
+        {
+          name: 'FN_KNOCK_DOCKER_IPV4_SUBNET',
+          value: '172.30.0.0/16',
+          description: t('install.docker.ipv4ConfigDescription'),
+        },
+        {
+          name: 'FN_KNOCK_DOCKER_IPV6_SUBNET',
+          value: 'fd42:fb33:7f7a:100::/64',
+          description: t('install.docker.ipv6ConfigDescription'),
+        },
+      ]
+    : []),
   {
     name: 'DOCKER_ADMIN_TRUSTED_PROXY_CIDRS',
     value: t('install.docker.optionalValue'),
@@ -83,61 +110,67 @@ const configItems = computed(() => [
     description: t('install.docker.discoverLanConfigDescription'),
   },
 ])
-const composeFile = [
-  'services:',
-  '  fn-knock:',
-  '    image: ${FN_KNOCK_IMAGE}',
-  '    restart: unless-stopped',
-  '    environment:',
-  '      TZ: ${TZ:-Asia/Shanghai}',
-  '      FN_KNOCK_RUNTIME_TARGET: docker',
-  '      FN_KNOCK_DATA_DIR: /var/lib/fn-knock',
-  '      FN_KNOCK_GATEWAY_CONFIG_DIR: /usr/local/etc/fn-knock',
-  '      ADMIN_VIEW_PORT: ${ADMIN_VIEW_PORT:-7991}',
-  '      BACKEND_PORT: ${BACKEND_PORT:-7998}',
-  '      AUTH_PORT: ${AUTH_PORT:-7997}',
-  '      GO_BACKEND_PORT: ${GO_BACKEND_PORT:-7996}',
-  '      GO_REPROXY_PORT: ${GO_REPROXY_PORT:-7999}',
-  '      DOCKER_ADMIN_TRUSTED_PROXY_CIDRS: ${DOCKER_ADMIN_TRUSTED_PROXY_CIDRS:-}',
-  '      DOCKER_DISCOVER_LAN_IP: ${DOCKER_DISCOVER_LAN_IP:-}',
-  '      DDNS_HOST_IF_INET6_PATH: /host/proc/net/if_inet6',
-  '      ADMIN_VIEW_HOST: 0.0.0.0',
-  '      BACKEND_HOST: 127.0.0.1',
-  '    ports:',
-  '      - "${ADMIN_VIEW_PORT:-7991}:${ADMIN_VIEW_PORT:-7991}"',
-  '      - "${GO_REPROXY_PORT:-7999}:${GO_REPROXY_PORT:-7999}"',
-  '    networks:',
-  '      - fn_knock_net',
-  '    volumes:',
-  '      - fn_knock_data:/var/lib/fn-knock',
-  '      - fn_knock_gateway:/usr/local/etc/fn-knock',
-  '      - type: bind',
-  '        source: /proc/net/if_inet6',
-  '        target: /host/proc/net/if_inet6',
-  '        read_only: true',
-  '    healthcheck:',
-  '      test:',
-  '        [',
-  '          "CMD-SHELL",',
-  '          "curl -fsS http://127.0.0.1:${ADMIN_VIEW_PORT:-7991}/api/admin/healthz || exit 1",',
-  '        ]',
-  '      interval: 10s',
-  '      timeout: 5s',
-  '      retries: 12',
-  '      start_period: 20s',
-  '',
-  'volumes:',
-  '  fn_knock_data:',
-  '  fn_knock_gateway:',
-  '',
-  'networks:',
-  '  fn_knock_net:',
-  '    enable_ipv6: true',
-  '    ipam:',
-  '      config:',
-  '        - subnet: ${FN_KNOCK_DOCKER_IPV4_SUBNET:-172.30.0.0/16}',
-  '        - subnet: ${FN_KNOCK_DOCKER_IPV6_SUBNET:-fd42:fb33:7f7a:100::/64}',
-].join('\n')
+const composeFile = computed(() =>
+  [
+    'services:',
+    '  fn-knock:',
+    '    image: ${FN_KNOCK_IMAGE}',
+    '    restart: unless-stopped',
+    ...(activeNetwork.value === 'host' ? ['    network_mode: host'] : []),
+    '    environment:',
+    '      TZ: ${TZ:-Asia/Shanghai}',
+    '      FN_KNOCK_RUNTIME_TARGET: docker',
+    '      FN_KNOCK_DATA_DIR: /var/lib/fn-knock',
+    '      FN_KNOCK_GATEWAY_CONFIG_DIR: /usr/local/etc/fn-knock',
+    '      ADMIN_VIEW_PORT: ${ADMIN_VIEW_PORT:-7991}',
+    '      BACKEND_PORT: ${BACKEND_PORT:-7998}',
+    '      AUTH_PORT: ${AUTH_PORT:-7997}',
+    '      GO_BACKEND_PORT: ${GO_BACKEND_PORT:-7996}',
+    '      GO_REPROXY_PORT: ${GO_REPROXY_PORT:-7999}',
+    '      DOCKER_ADMIN_TRUSTED_PROXY_CIDRS: ${DOCKER_ADMIN_TRUSTED_PROXY_CIDRS:-}',
+    '      DOCKER_DISCOVER_LAN_IP: ${DOCKER_DISCOVER_LAN_IP:-}',
+    '      ADMIN_VIEW_HOST: 0.0.0.0',
+    '      BACKEND_HOST: 127.0.0.1',
+    ...(activeNetwork.value === 'bridge'
+      ? [
+          '    ports:',
+          '      - "${ADMIN_VIEW_PORT:-7991}:${ADMIN_VIEW_PORT:-7991}"',
+          '      - "${GO_REPROXY_PORT:-7999}:${GO_REPROXY_PORT:-7999}"',
+          '    networks:',
+          '      - fn_knock_net',
+        ]
+      : []),
+    '    volumes:',
+    '      - fn_knock_data:/var/lib/fn-knock',
+    '      - fn_knock_gateway:/usr/local/etc/fn-knock',
+    '    healthcheck:',
+    '      test:',
+    '        [',
+    '          "CMD-SHELL",',
+    '          "curl -fsS http://127.0.0.1:${ADMIN_VIEW_PORT:-7991}/api/admin/healthz || exit 1",',
+    '        ]',
+    '      interval: 10s',
+    '      timeout: 5s',
+    '      retries: 12',
+    '      start_period: 20s',
+    '',
+    'volumes:',
+    '  fn_knock_data:',
+    '  fn_knock_gateway:',
+    ...(activeNetwork.value === 'bridge'
+      ? [
+          '',
+          'networks:',
+          '  fn_knock_net:',
+          '    enable_ipv6: true',
+          '    ipam:',
+          '      config:',
+          '        - subnet: ${FN_KNOCK_DOCKER_IPV4_SUBNET:-172.30.0.0/16}',
+          '        - subnet: ${FN_KNOCK_DOCKER_IPV6_SUBNET:-fd42:fb33:7f7a:100::/64}',
+        ]
+      : []),
+  ].join('\n'),
+)
 const quickInstallCommand = computed(() =>
   [
     "sh <<'FN_KNOCK_INSTALL'",
@@ -150,10 +183,6 @@ const quickInstallCommand = computed(() =>
     '',
     'command -v docker >/dev/null 2>&1 || { echo "Docker is not installed." >&2; exit 1; }',
     'docker compose version >/dev/null 2>&1 || { echo "Docker Compose is not available." >&2; exit 1; }',
-    'if [ ! -r /proc/net/if_inet6 ] || ! awk \'$4 == "00" { found=1 } END { exit !found }\' /proc/net/if_inet6; then',
-    '  echo "No usable global IPv6 interface was found on this host." >&2',
-    '  exit 1',
-    'fi',
     '',
     'install_dir=/opt/fn-knock-docker',
     'mkdir -p "$install_dir"',
@@ -169,7 +198,7 @@ const quickInstallCommand = computed(() =>
     'FN_KNOCK_ENV',
     '',
     "cat > docker-compose.yml <<'FN_KNOCK_COMPOSE'",
-    composeFile,
+    composeFile.value,
     'FN_KNOCK_COMPOSE',
     '',
     'docker compose pull',
@@ -182,32 +211,64 @@ const portItems = computed(() => [
   {
     port: '7991',
     name: t('install.docker.adminService'),
-    scope: t('install.docker.hostMapped'),
+    scope: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostNetworkScope'
+        : 'install.docker.hostMapped',
+    ),
     note: t('install.docker.adminPortNote'),
   },
   {
     port: '7999',
     name: t('install.docker.gatewayService'),
-    scope: t('install.docker.hostMapped'),
+    scope: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostNetworkScope'
+        : 'install.docker.hostMapped',
+    ),
     note: t('install.docker.gatewayPortNote'),
   },
   {
     port: '7998',
     name: t('install.docker.rustBackendService'),
-    scope: t('install.docker.containerOnly'),
-    note: t('install.docker.internalPortNote'),
+    scope: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternal'
+        : 'install.docker.containerOnly',
+    ),
+    note: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternalPortNote'
+        : 'install.docker.internalPortNote',
+    ),
   },
   {
     port: '7997',
     name: t('install.docker.authFrontendService'),
-    scope: t('install.docker.containerOnly'),
-    note: t('install.docker.internalPortNote'),
+    scope: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternal'
+        : 'install.docker.containerOnly',
+    ),
+    note: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternalPortNote'
+        : 'install.docker.internalPortNote',
+    ),
   },
   {
     port: '7996',
     name: t('install.docker.goAdminService'),
-    scope: t('install.docker.containerOnly'),
-    note: t('install.docker.internalPortNote'),
+    scope: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternal'
+        : 'install.docker.containerOnly',
+    ),
+    note: t(
+      activeNetwork.value === 'host'
+        ? 'install.docker.hostInternalPortNote'
+        : 'install.docker.internalPortNote',
+    ),
   },
 ])
 const startCommand = [
@@ -275,12 +336,43 @@ const resetPanelPasswordCommand =
         </div>
       </section>
 
+      <section class="source-panel mt-8 max-w-5xl" aria-labelledby="docker-network-title">
+        <div class="source-heading">
+          <h2 id="docker-network-title">{{ t('install.docker.networkTitle') }}</h2>
+        </div>
+        <div class="source-switch" role="group" :aria-label="t('install.docker.networkLabel')">
+          <button
+            v-for="option in networkOptions"
+            :key="option.id"
+            type="button"
+            class="source-option"
+            :class="{ 'is-active': activeNetwork === option.id }"
+            :data-network="option.id"
+            :aria-pressed="activeNetwork === option.id"
+            @click="activeNetwork = option.id"
+          >
+            <span>{{ option.label }}</span>
+            <small>{{ option.hostname }}</small>
+          </button>
+        </div>
+
+        <div class="source-summary" aria-live="polite">
+          <p>{{ activeNetworkOption?.description }}</p>
+          <p v-if="activeNetwork === 'bridge'" class="network-warning">
+            {{ t('install.docker.bridgeNetworkWarning') }}
+          </p>
+          <code data-testid="selected-network">{{ activeNetworkOption?.hostname }}</code>
+        </div>
+      </section>
+
       <section class="quick-install mt-14 max-w-5xl" aria-labelledby="quick-install-title">
         <h2 id="quick-install-title">{{ t('install.docker.quickInstallTitle') }}</h2>
         <p class="quick-install-description">{{ t('install.docker.quickInstallDescription') }}</p>
         <p class="quick-install-source">
           <span>{{ t('install.docker.quickInstallSource') }}</span>
           <code>{{ image }}</code>
+          <span>{{ t('install.docker.quickInstallNetwork') }}</span>
+          <code>{{ activeNetworkOption?.label }}</code>
         </p>
         <DockerCodeBlock
           class="mt-6"
@@ -340,7 +432,15 @@ const resetPanelPasswordCommand =
           <p class="step-number">04</p>
           <div>
             <h3>{{ t('install.docker.composeTitle') }}</h3>
-            <p>{{ t('install.docker.composeDescription') }}</p>
+            <p>
+              {{
+                t(
+                  activeNetwork === 'host'
+                    ? 'install.docker.hostComposeDescription'
+                    : 'install.docker.bridgeComposeDescription',
+                )
+              }}
+            </p>
             <DockerCodeBlock class="mt-6" title="docker-compose.yml" :code="composeFile" />
           </div>
         </article>
@@ -357,7 +457,15 @@ const resetPanelPasswordCommand =
 
       <section class="after-install mt-14 max-w-5xl">
         <h2>{{ t('install.docker.afterInstallTitle') }}</h2>
-        <p class="section-description">{{ t('install.docker.afterInstallDescription') }}</p>
+        <p class="section-description">
+          {{
+            t(
+              activeNetwork === 'host'
+                ? 'install.docker.hostAfterInstallDescription'
+                : 'install.docker.bridgeAfterInstallDescription',
+            )
+          }}
+        </p>
         <PortTable
           class="mt-6"
           tone="warm"
@@ -502,6 +610,10 @@ const resetPanelPasswordCommand =
   font-size: 0.82rem;
   line-height: 1.7;
   margin-top: 0.35rem;
+}
+.source-summary .network-warning {
+  color: #9a5a16;
+  font-weight: 600;
 }
 .source-summary code {
   color: #075985;
