@@ -56,6 +56,12 @@ const routes: RouteRecordRaw[] = [
         meta: { titleKey: 'meta.changelog' },
       },
       {
+        path: 'accessibility',
+        name: 'accessibility',
+        component: () => import('@/pages/AccessibilityPage.vue'),
+        meta: { titleKey: 'meta.accessibility' },
+      },
+      {
         path: ':pathMatch(.*)*',
         name: 'not-found',
         component: () => import('@/pages/NotFoundPage.vue'),

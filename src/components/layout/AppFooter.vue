@@ -73,6 +73,11 @@ const copyStatus = computed(() => {
           <RouterLink :to="{ name: 'changelog' }" class="transition-colors hover:text-foreground">{{
             t('footer.changelog')
           }}</RouterLink>
+          <RouterLink
+            :to="{ name: 'accessibility' }"
+            class="transition-colors hover:text-foreground"
+            >{{ t('footer.accessibility') }}</RouterLink
+          >
         </nav>
         <a
           href="https://beian.miit.gov.cn/"

@@ -7,6 +7,7 @@ import HomeDownloadActions from '@/components/home/HomeDownloadActions.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import LanguageSelector from '@/components/layout/LanguageSelector.vue'
 import LoginDialog from '@/components/layout/LoginDialog.vue'
+import AccessibilityPage from '@/pages/AccessibilityPage.vue'
 import ChangelogPage from '@/pages/ChangelogPage.vue'
 import DockerInstallPage from '@/pages/DockerInstallPage.vue'
 import HomePage from '@/pages/HomePage.vue'
@@ -107,6 +108,7 @@ describe('automated accessibility regression', () => {
       LegalPage,
       ThirdPartySoftwarePage,
       ChangelogPage,
+      AccessibilityPage,
       NotFoundPage,
     ]
 
