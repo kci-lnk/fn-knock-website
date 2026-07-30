@@ -23,9 +23,16 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
 
         <div class="changelog-meta">
           <p class="current-release">
-            <span class="status-dot" aria-hidden="true" />
+            <span class="status-dot" :data-status="status" aria-hidden="true" />
             <span>{{ t('changelog.latest') }}</span>
-            <strong>v{{ version }}</strong>
+            <strong v-if="status === 'success'">v{{ version }}</strong>
+            <span v-else-if="isWaiting" class="current-release__state">
+              <RefreshCw aria-hidden="true" />
+              {{ t('footer.versionLoading') }}
+            </span>
+            <span v-else class="current-release__state">
+              {{ t('footer.versionUnavailable') }}
+            </span>
           </p>
           <div class="release-links">
             <RouterLink :to="{ name: 'home', hash: '#downloads' }" class="official-download-link">
@@ -175,11 +182,32 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
   font-weight: 650;
 }
 
+.current-release__state {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.current-release__state svg {
+  animation: changelog-spin 1s linear infinite;
+  height: 0.8rem;
+  width: 0.8rem;
+}
+
 .status-dot {
   background: #16a34a;
   border-radius: 50%;
   height: 0.45rem;
   width: 0.45rem;
+}
+
+.status-dot[data-status='idle'],
+.status-dot[data-status='loading'] {
+  background: #2563eb;
+}
+
+.status-dot[data-status='error'] {
+  background: #94a3b8;
 }
 
 .release-links {
@@ -404,6 +432,7 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .current-release__state svg,
   .changelog-state__spinner {
     animation: none;
   }

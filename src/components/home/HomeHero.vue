@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { ArrowUpRight, Eye, LockKeyhole, Network, ShieldCheck } from 'lucide-vue-next'
+import { ArrowUpRight, Eye, LoaderCircle, LockKeyhole, Network, ShieldCheck } from 'lucide-vue-next'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HomeDownloadActions from '@/components/home/HomeDownloadActions.vue'
 import { useLatestRelease } from '@/composables/useLatestRelease'
@@ -13,7 +14,8 @@ const statIcons: Record<StatIcon, Component> = {
   eye: Eye,
 }
 const { t } = useI18n()
-const { version } = useLatestRelease()
+const { status, version } = useLatestRelease()
+const isWaitingForVersion = computed(() => status.value === 'idle' || status.value === 'loading')
 </script>
 
 <template>
@@ -21,11 +23,30 @@ const { version } = useLatestRelease()
     <div class="hero-grid-layer" aria-hidden="true" />
     <div class="mx-auto max-w-6xl px-4 pb-14 pt-10 sm:px-6 lg:pb-20 lg:pt-14">
       <div class="flex justify-center">
-        <RouterLink :to="{ name: 'changelog' }" class="release-pill">
+        <RouterLink
+          :to="{ name: 'changelog' }"
+          class="release-pill"
+          :aria-busy="isWaitingForVersion || undefined"
+        >
           <span class="release-pulse" aria-hidden="true" />
-          <span class="font-bold tracking-[0.08em] text-blue-700">V{{ version }}</span>
-          <span class="hidden h-3 w-px bg-slate-300 sm:inline-block" aria-hidden="true" />
-          <span class="min-w-0 truncate text-slate-600">{{ t('home.releaseBadge') }}</span>
+          <template v-if="status === 'success'">
+            <span class="font-bold tracking-[0.08em] text-blue-700">V{{ version }}</span>
+            <span class="hidden h-3 w-px bg-slate-300 sm:inline-block" aria-hidden="true" />
+            <span class="min-w-0 truncate text-slate-600">{{ t('home.releaseBadge') }}</span>
+          </template>
+          <span
+            v-else-if="isWaitingForVersion"
+            class="inline-flex min-w-0 items-center gap-1.5 text-slate-600"
+          >
+            <LoaderCircle
+              class="h-3.5 w-3.5 shrink-0 animate-spin motion-reduce:animate-none"
+              aria-hidden="true"
+            />
+            <span class="truncate">{{ t('footer.versionLoading') }}</span>
+          </span>
+          <span v-else class="min-w-0 truncate text-slate-600">
+            {{ t('footer.versionUnavailable') }}
+          </span>
           <ArrowUpRight class="h-3 w-3 shrink-0 text-violet-600" />
         </RouterLink>
       </div>

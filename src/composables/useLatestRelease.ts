@@ -1,12 +1,10 @@
 import { readonly, reactive, toRefs } from 'vue'
 import { fetchLatestRelease } from '@/services/release'
 
-export const fallbackReleaseVersion = '2.0.8'
-
 type ReleaseStatus = 'idle' | 'loading' | 'success' | 'error'
 
 const state = reactive({
-  version: fallbackReleaseVersion,
+  version: '',
   releaseNotes: '',
   status: 'idle' as ReleaseStatus,
 })

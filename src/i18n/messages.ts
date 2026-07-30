@@ -62,6 +62,8 @@ export const zhCN = {
     accessibility: '无障碍访问',
     version: '当前版本 V{version}',
     versionLabel: '查看当前版本 V{version} 的更新日志',
+    versionLoading: '正在获取版本…',
+    versionUnavailable: '版本暂不可用',
   },
   accessibility: {
     eyebrow: 'Accessibility statement',
@@ -554,6 +556,8 @@ export const zhHant = {
     accessibility: '無障礙',
     version: '目前版本 V{version}',
     versionLabel: '查看目前版本 V{version} 的更新日誌',
+    versionLoading: '正在取得版本…',
+    versionUnavailable: '版本暫時無法使用',
   },
   accessibility: {
     eyebrow: 'Accessibility statement',
@@ -1022,6 +1026,8 @@ export const en = {
     accessibility: 'Accessibility',
     version: 'Current version V{version}',
     versionLabel: 'View the changelog for current version V{version}',
+    versionLoading: 'Loading version…',
+    versionUnavailable: 'Version unavailable',
   },
   accessibility: {
     eyebrow: 'Accessibility statement',
@@ -1532,6 +1538,8 @@ export const koKR = {
     accessibility: '접근성',
     version: '현재 버전 V{version}',
     versionLabel: '현재 버전 V{version}의 변경 기록 보기',
+    versionLoading: '버전을 불러오는 중…',
+    versionUnavailable: '버전을 사용할 수 없음',
   },
   accessibility: {
     eyebrow: 'Accessibility statement',
@@ -2034,6 +2042,8 @@ export const jaJP = {
     accessibility: 'アクセシビリティ',
     version: '現在のバージョン V{version}',
     versionLabel: '現在のバージョン V{version} の更新履歴を見る',
+    versionLoading: 'バージョンを読み込んでいます…',
+    versionUnavailable: 'バージョンを取得できません',
   },
   accessibility: {
     eyebrow: 'Accessibility statement',

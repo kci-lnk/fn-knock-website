@@ -1,6 +1,7 @@
-import { mount, RouterLinkStub } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { loadLatestRelease } from '@/composables/useLatestRelease'
 import HomeHero from './HomeHero.vue'
 
 const mountHero = () =>
@@ -12,6 +13,10 @@ const mountHero = () =>
       },
     },
   })
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe('HomeHero capability cards', () => {
   it('describes the high-performance reverse proxy without an MTTF card', () => {
@@ -25,11 +30,26 @@ describe('HomeHero capability cards', () => {
 })
 
 describe('HomeHero release announcement', () => {
-  it('links the current release to the standalone changelog', () => {
+  it('shows a loading state until the release endpoint resolves', async () => {
     const wrapper = mountHero()
     const releaseLink = wrapper.getComponent(RouterLinkStub)
 
-    expect(releaseLink.text()).toContain('V2.0.8')
+    expect(releaseLink.text()).toContain('正在获取版本')
+    expect(releaseLink.text()).not.toMatch(/V\d/)
+    expect(releaseLink.attributes('aria-busy')).toBe('true')
     expect(releaseLink.props('to')).toEqual({ name: 'changelog' })
+
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(Response.json({ version: '2.1.9', release_notes: '2.1.9 update' })),
+    )
+    await loadLatestRelease()
+    await flushPromises()
+
+    expect(releaseLink.text()).toContain('V2.1.9')
+    expect(releaseLink.text()).not.toContain('正在获取版本')
+    expect(releaseLink.attributes('aria-busy')).toBeUndefined()
   })
 })
