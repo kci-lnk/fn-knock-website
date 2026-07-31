@@ -50,4 +50,24 @@ describe('changelog parser', () => {
       { text: 'https://docs.fnknock.cn/', href: 'https://docs.fnknock.cn/' },
     ])
   })
+
+  it('parses the lightweight bold syntax used by release notices', () => {
+    expect(
+      parseChangelogText('[**用户协议与隐私政策**](https://www.fnknock.cn/legal) 和 **重要提示**'),
+    ).toEqual([
+      {
+        text: '用户协议与隐私政策',
+        href: 'https://www.fnknock.cn/legal',
+        strong: true,
+      },
+      { text: ' 和 ' },
+      { text: '重要提示', strong: true },
+    ])
+  })
+
+  it('keeps a link inside bold text clickable', () => {
+    expect(parseChangelogText('**[官网](https://www.fnknock.cn/)**')).toEqual([
+      { text: '官网', href: 'https://www.fnknock.cn/', strong: true },
+    ])
+  })
 })

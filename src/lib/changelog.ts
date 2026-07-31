@@ -1,6 +1,7 @@
 export type ChangelogTextSegment = {
   text: string
   href?: string
+  strong?: boolean
 }
 
 export type ChangelogItem = {
@@ -20,7 +21,8 @@ export type ParsedChangelog = {
   sections: ChangelogSection[]
 }
 
-const inlineLinkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s，、。；！？]+)/g
+const inlineTokenPattern =
+  /(\*\*|__)(.+?)\1|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s，、。；！？]+)/g
 
 const parseReleaseHeading = (line: string): Pick<ChangelogSection, 'version' | 'label'> | null => {
   const markdownHeading = line.match(/^#{1,6}\s+(?:fn-knock\s+)?v?(\d+(?:\.\d+){2})(?:\s+(.+))?$/i)
@@ -48,15 +50,30 @@ export const parseChangelogText = (value: string): ChangelogTextSegment[] => {
   const segments: ChangelogTextSegment[] = []
   let lastIndex = 0
 
-  for (const match of value.matchAll(inlineLinkPattern)) {
+  for (const match of value.matchAll(inlineTokenPattern)) {
     const index = match.index ?? 0
     if (index > lastIndex) segments.push({ text: value.slice(lastIndex, index) })
 
-    const markdownLabel = match[1]
-    const markdownHref = match[2]
-    const plainHref = match[3]
-    const href = markdownHref || plainHref || ''
-    segments.push({ text: markdownLabel || plainHref || href, href })
+    const strongText = match[2]
+    const markdownLabel = match[3]
+    const markdownHref = match[4]
+    const plainHref = match[5]
+
+    if (strongText !== undefined) {
+      segments.push(
+        ...parseChangelogText(strongText).map((segment) => ({ ...segment, strong: true })),
+      )
+    } else if (markdownLabel !== undefined && markdownHref !== undefined) {
+      segments.push(
+        ...parseChangelogText(markdownLabel).map((segment) => ({
+          ...segment,
+          href: markdownHref,
+        })),
+      )
+    } else if (plainHref !== undefined) {
+      segments.push({ text: plainHref, href: plainHref })
+    }
+
     lastIndex = index + match[0].length
   }
 

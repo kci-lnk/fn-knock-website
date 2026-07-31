@@ -12,7 +12,9 @@ defineProps<{ segments: ChangelogTextSegment[] }>()
       target="_blank"
       rel="noopener noreferrer"
       class="changelog-inline-link"
-      >{{ segment.text }}</a
+      ><strong v-if="segment.strong">{{ segment.text }}</strong
+      ><template v-else>{{ segment.text }}</template></a
+    ><strong v-else-if="segment.strong">{{ segment.text }}</strong
     ><span v-else>{{ segment.text }}</span>
   </template>
 </template>
