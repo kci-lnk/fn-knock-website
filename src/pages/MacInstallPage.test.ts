@@ -24,5 +24,8 @@ describe('MacInstallPage', () => {
     )
     expect(wrapper.text()).toContain('/Library/Application Support/FnKnock')
     expect(wrapper.text()).toContain('不支持 iptables')
+    expect(wrapper.text()).toContain('macOS功能局限')
+    expect(wrapper.text()).toContain('运行 sudo knock 即可唤起交互式管理菜单')
+    expect(wrapper.text()).not.toContain('当前发行包未使用 Apple Developer ID 签名或公证')
   })
 })
