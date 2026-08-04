@@ -185,34 +185,38 @@ const ports = computed<PortItem[]>(() => [
 
 <style scoped>
 .macos-page {
-  --macos-accent: #007aff;
-  --macos-accent-dark: #0066cc;
-  --macos-border: rgb(60 60 67 / 0.14);
+  --macos-blue: #0066cc;
+  --macos-border: #d2d2d7;
   --macos-label: #1d1d1f;
-  --macos-secondary-label: #6e6e73;
-  background:
-    radial-gradient(circle at 88% 0%, rgb(10 132 255 / 0.11), transparent 30rem),
-    linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 48%, #f2f2f4 100%);
+  --macos-secondary: #6e6e73;
+  background: #f5f5f7;
   color: var(--macos-label);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
   min-height: calc(100vh - 4rem);
   padding-bottom: 7rem;
 }
 .macos-page :deep(.back-link) {
-  color: var(--macos-accent-dark);
+  color: var(--macos-blue);
 }
 .macos-page :deep(.back-link:hover) {
-  color: #004e9f;
+  color: #004a99;
+}
+.macos-page :deep(.current-version-link--light) {
+  background: transparent;
+  border-color: transparent;
+  color: var(--macos-secondary);
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+.macos-page :deep(.current-version-link--light:hover) {
+  background: transparent;
+  border-color: transparent;
 }
 .platform-label {
-  background: var(--macos-accent);
-  border-radius: 999px;
-  color: #fff;
+  color: var(--macos-secondary);
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 0.42rem 0.75rem;
-  box-shadow: 0 2px 8px rgb(0 122 255 / 0.2);
+  letter-spacing: 0.06em;
 }
 .page-intro h1 {
   color: var(--macos-label);
@@ -221,36 +225,24 @@ const ports = computed<PortItem[]>(() => [
   line-height: 1.06;
 }
 .page-intro > p {
-  color: var(--macos-secondary-label);
+  color: var(--macos-secondary);
 }
 .quick-install,
 .architecture-section,
 .maintenance-section,
 .ports-section {
-  background: rgb(255 255 255 / 0.82);
-  border: 1px solid var(--macos-border);
-  border-radius: 1.25rem;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.03),
-    0 12px 36px rgb(0 0 0 / 0.045);
-  padding: 1.75rem;
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
+  border-top: 1px solid var(--macos-border);
+  padding: 2rem 0;
 }
 .section-heading {
   align-items: flex-start;
   display: flex;
-  gap: 0.9rem;
+  gap: 0.75rem;
 }
 .section-heading > svg {
-  background: rgb(0 122 255 / 0.1);
-  border-radius: 0.7rem;
-  color: var(--macos-accent-dark);
+  color: #86868b;
   flex: 0 0 auto;
-  height: 2.4rem;
-  margin-top: 0.05rem;
-  padding: 0.5rem;
-  width: 2.4rem;
+  margin-top: 0.2rem;
 }
 .section-heading h2,
 .section-title-row h2,
@@ -264,7 +256,7 @@ const ports = computed<PortItem[]>(() => [
 .section-heading p,
 .section-description,
 .detail-card p {
-  color: var(--macos-secondary-label);
+  color: var(--macos-secondary);
   line-height: 1.7;
   margin-top: 0.4rem;
 }
@@ -275,15 +267,12 @@ const ports = computed<PortItem[]>(() => [
   justify-content: space-between;
 }
 .section-title-row > span {
-  background: #f2f2f7;
-  border-radius: 999px;
-  color: var(--macos-secondary-label);
+  color: #86868b;
   font-size: 0.78rem;
-  padding: 0.38rem 0.65rem;
   text-align: right;
 }
 .section-kicker {
-  color: var(--macos-accent-dark);
+  color: #86868b;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -292,41 +281,27 @@ const ports = computed<PortItem[]>(() => [
 }
 .architecture-grid {
   display: grid;
-  gap: 0.75rem;
+  column-gap: 2rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .architecture-card {
   align-items: center;
-  background: #f7f7fa;
-  border: 1px solid rgb(60 60 67 / 0.12);
-  border-radius: 0.9rem;
+  border-bottom: 1px solid var(--macos-border);
+  border-top: 1px solid var(--macos-border);
   color: var(--macos-label);
   display: grid;
-  gap: 0.9rem;
+  gap: 0.75rem;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  padding: 1rem;
+  padding: 0.9rem 0;
   text-decoration: none;
-  transition:
-    border-color 0.16s ease,
-    box-shadow 0.16s ease,
-    transform 0.16s ease;
+  transition: color 0.16s ease;
 }
 .architecture-card:hover {
-  background: #fff;
-  border-color: rgb(0 122 255 / 0.48);
-  box-shadow: 0 10px 28px rgb(0 122 255 / 0.11);
-  color: var(--macos-accent-dark);
-  transform: translateY(-2px);
+  color: var(--macos-blue);
 }
 .architecture-icon {
-  align-items: center;
-  background: rgb(0 122 255 / 0.1);
-  border-radius: 0.7rem;
-  color: var(--macos-accent-dark);
+  color: #86868b;
   display: inline-flex;
-  height: 2.6rem;
-  justify-content: center;
-  width: 2.6rem;
 }
 .architecture-card strong,
 .architecture-card small {
@@ -336,45 +311,36 @@ const ports = computed<PortItem[]>(() => [
   font-size: 0.9rem;
 }
 .architecture-card small {
-  color: var(--macos-secondary-label);
+  color: var(--macos-secondary);
   font-size: 0.75rem;
   margin-top: 0.25rem;
 }
 .details-grid {
+  border-top: 1px solid var(--macos-border);
   display: grid;
-  gap: 0.9rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .detail-card {
-  background: rgb(255 255 255 / 0.82);
-  border: 1px solid var(--macos-border);
-  border-radius: 1.25rem;
-  box-shadow: 0 8px 28px rgb(0 0 0 / 0.035);
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   grid-template-columns: auto minmax(0, 1fr);
-  padding: 1.5rem;
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
+  padding: 2rem 2rem 2rem 0;
 }
 .detail-card > svg {
-  background: rgb(0 122 255 / 0.1);
-  border-radius: 0.65rem;
-  color: var(--macos-accent-dark);
-  height: 2.2rem;
-  margin-top: 0.05rem;
-  padding: 0.45rem;
-  width: 2.2rem;
+  color: #86868b;
+  margin-top: 0.2rem;
 }
 .detail-card--limitations {
-  background: linear-gradient(145deg, rgb(239 246 255 / 0.96), rgb(255 255 255 / 0.88));
+  border-left: 1px solid var(--macos-border);
+  padding-left: 2rem;
+  padding-right: 0;
 }
 .path-list {
   display: grid;
   gap: 0.7rem;
 }
 .path-list dt {
-  color: var(--macos-secondary-label);
+  color: #86868b;
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -387,14 +353,13 @@ const ports = computed<PortItem[]>(() => [
 }
 .menu-command {
   align-items: center;
-  background: linear-gradient(135deg, #0a84ff, #0071e3);
-  border-radius: 1rem;
-  color: #fff;
+  border-bottom: 1px solid var(--macos-border);
+  border-top: 1px solid var(--macos-border);
+  color: var(--macos-label);
   display: flex;
   gap: 1.25rem;
   justify-content: space-between;
-  padding: 1rem 1.1rem;
-  box-shadow: 0 10px 24px rgb(0 122 255 / 0.18);
+  padding: 0.9rem 0;
 }
 .menu-command > div {
   align-items: center;
@@ -407,79 +372,57 @@ const ports = computed<PortItem[]>(() => [
   font-weight: 700;
 }
 .menu-command code {
-  background: rgb(255 255 255 / 0.18);
-  border: 1px solid rgb(255 255 255 / 0.22);
-  border-radius: 0.55rem;
-  color: #fff;
+  background: #e8e8ed;
+  border-radius: 0.3rem;
+  color: var(--macos-label);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.8rem;
   padding: 0.55rem 0.7rem;
 }
 .menu-command p {
-  color: rgb(255 255 255 / 0.88);
+  color: var(--macos-secondary);
   font-size: 0.78rem;
   line-height: 1.55;
   text-align: right;
 }
 .command-list {
   display: grid;
-  gap: 0.55rem;
+  column-gap: 2rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .command-list code {
-  background: #f2f2f7;
-  border: 1px solid rgb(60 60 67 / 0.08);
-  border-radius: 0.7rem;
+  border-bottom: 1px solid var(--macos-border);
   color: #3a3a3c;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.76rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.75rem 0;
 }
 .quick-install :deep(.docker-code-block) {
   background: #1c1c1e;
-  border: 1px solid rgb(255 255 255 / 0.08);
-  border-radius: 0.9rem;
-  box-shadow: 0 16px 34px rgb(0 0 0 / 0.14);
+  border: 0;
+  border-radius: 0.45rem;
 }
 .quick-install :deep(.code-toolbar) {
-  background: #2c2c2e;
+  background: #242426;
   border-bottom-color: rgb(255 255 255 / 0.08);
-  padding-left: 4.35rem;
-  position: relative;
-}
-.quick-install :deep(.code-toolbar)::before {
-  background: #ff5f57;
-  border-radius: 50%;
-  box-shadow:
-    1.15rem 0 #febc2e,
-    2.3rem 0 #28c840;
-  content: '';
-  height: 0.72rem;
-  left: 1rem;
-  position: absolute;
-  width: 0.72rem;
 }
 .quick-install :deep(.copy-button:hover) {
-  background: rgb(10 132 255 / 0.24);
+  background: rgb(255 255 255 / 0.08);
 }
 .ports-section :deep(.port-table-region) {
-  --port-border: rgb(60 60 67 / 0.12);
-  --port-border-strong: rgb(60 60 67 / 0.12);
-  --port-row-border: rgb(60 60 67 / 0.09);
-  --port-code: var(--macos-accent-dark);
+  --port-border: var(--macos-border);
+  --port-border-strong: var(--macos-border);
+  --port-row-border: #e5e5e7;
+  --port-code: var(--macos-blue);
   --port-name: var(--macos-label);
-  --port-text: var(--macos-secondary-label);
+  --port-text: var(--macos-secondary);
   --port-head: #8e8e93;
-  background: #f7f7fa;
-  border: 1px solid var(--macos-border);
-  border-radius: 0.9rem;
-  overflow-x: auto;
 }
 .ports-section :deep(thead th),
 .ports-section :deep(tbody td),
 .ports-section :deep(tbody th) {
-  padding-left: 0.9rem;
-  padding-right: 0.9rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 @media (max-width: 640px) {
   .macos-page {
@@ -497,13 +440,12 @@ const ports = computed<PortItem[]>(() => [
   .section-title-row > span {
     text-align: left;
   }
-  .quick-install,
-  .architecture-section,
-  .maintenance-section,
-  .ports-section,
   .detail-card {
-    border-radius: 1rem;
-    padding: 1.25rem;
+    padding: 1.5rem 0;
+  }
+  .detail-card--limitations {
+    border-left: 0;
+    border-top: 1px solid var(--macos-border);
   }
   .menu-command {
     align-items: flex-start;
