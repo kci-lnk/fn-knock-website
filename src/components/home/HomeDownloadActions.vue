@@ -6,6 +6,7 @@ import {
   Cpu,
   Download,
   HardDriveDownload,
+  Laptop,
   MonitorDown,
   Server,
   Terminal,
@@ -244,6 +245,18 @@ onBeforeUnmount(() => {
 
       <div class="download-action-item relative min-w-0">
         <RouterLink
+          to="/macos"
+          class="download-action-button download-action--macos h-12 w-full rounded-lg px-4 text-sm font-bold"
+        >
+          <span class="download-action-content">
+            <Laptop class="download-action-icon" aria-hidden="true" />
+            <span class="truncate">{{ t('home.downloads.macos') }}</span>
+          </span>
+        </RouterLink>
+      </div>
+
+      <div class="download-action-item relative min-w-0">
+        <RouterLink
           to="/windows"
           class="download-action-button download-action--windows h-12 w-full rounded-lg px-4 text-sm font-bold"
         >
@@ -266,7 +279,7 @@ onBeforeUnmount(() => {
         </RouterLink>
       </div>
 
-      <div class="download-action-item relative min-w-0 max-sm:col-span-2">
+      <div class="download-action-item relative min-w-0">
         <RouterLink
           to="/linux"
           class="download-action-button download-action--linux h-12 w-full rounded-lg px-4 text-sm font-bold"
@@ -319,7 +332,7 @@ onBeforeUnmount(() => {
 
 @container download-actions (min-width: 66.25rem) {
   .download-actions-grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 }
 
@@ -485,6 +498,14 @@ onBeforeUnmount(() => {
   --download-shadow: rgb(0 103 184 / 0.16);
   --download-shadow-hover: rgb(0 103 184 / 0.24);
   --download-sheen: rgb(219 234 254 / 0.4);
+}
+
+.download-action--macos {
+  --download-bg: linear-gradient(135deg, #3f4650, #17191d);
+  --download-hover-bg: linear-gradient(135deg, #525a66, #262a30);
+  --download-shadow: rgb(23 25 29 / 0.16);
+  --download-shadow-hover: rgb(23 25 29 / 0.24);
+  --download-sheen: rgb(255 255 255 / 0.42);
 }
 
 .download-action--synology {

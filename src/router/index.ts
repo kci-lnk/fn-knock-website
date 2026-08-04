@@ -20,6 +20,12 @@ const routes: RouteRecordRaw[] = [
         meta: { titleKey: 'meta.linux' },
       },
       {
+        path: 'macos',
+        name: 'macos-install',
+        component: () => import('@/pages/MacInstallPage.vue'),
+        meta: { titleKey: 'meta.macos' },
+      },
+      {
         path: 'docker',
         name: 'docker-install',
         component: () => import('@/pages/DockerInstallPage.vue'),

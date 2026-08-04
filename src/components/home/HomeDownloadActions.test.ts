@@ -131,6 +131,7 @@ describe('HomeDownloadActions', () => {
       'https://get.fnknock.cn/?arch=arm64',
     ])
     expect(mounted.get('.download-action--docker').attributes('to')).toBe('/docker')
+    expect(mounted.get('.download-action--macos').attributes('to')).toBe('/macos')
     expect(mounted.get('.download-action--synology').attributes('to')).toBe('/synology')
     expect(openWrtLinks).toHaveLength(openWrtDownloads.length * 2)
 

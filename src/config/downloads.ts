@@ -1,7 +1,7 @@
 export const downloadBaseUrl = 'https://get.fnknock.cn/'
 
 type DownloadQuery = {
-  type?: 'windows' | 'synology' | 'apk' | 'ipk'
+  type?: 'windows' | 'macos' | 'synology' | 'apk' | 'ipk'
   arch?: string
 }
 

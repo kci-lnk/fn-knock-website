@@ -13,6 +13,7 @@ import DockerInstallPage from '@/pages/DockerInstallPage.vue'
 import HomePage from '@/pages/HomePage.vue'
 import LegalPage from '@/pages/LegalPage.vue'
 import LinuxInstallPage from '@/pages/LinuxInstallPage.vue'
+import MacInstallPage from '@/pages/MacInstallPage.vue'
 import NotFoundPage from '@/pages/NotFoundPage.vue'
 import SynologyInstallPage from '@/pages/SynologyInstallPage.vue'
 import ThirdPartySoftwarePage from '@/pages/ThirdPartySoftwarePage.vue'
@@ -102,6 +103,7 @@ describe('automated accessibility regression', () => {
     const pages = [
       HomePage,
       LinuxInstallPage,
+      MacInstallPage,
       DockerInstallPage,
       WindowsInstallPage,
       SynologyInstallPage,
