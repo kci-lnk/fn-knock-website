@@ -41,6 +41,30 @@ describe('changelog parser', () => {
     expect(parsed.sections.every((section) => section.paragraphs.length === 0)).toBe(true)
   })
 
+  it('parses GitHub-style alerts without leaking blockquote markers', () => {
+    const parsed = parseChangelog(`# fn-knock 2.2.5
+
+> [!IMPORTANT]
+> **这是一个紧急修复版本。** 建议受影响的群晖（Synology）用户尽快升级。
+
+- 修复群晖（Synology）平台无法启动的问题。
+- 减少安装包体积。`)
+
+    expect(parsed.sections[0]?.alerts).toEqual([
+      {
+        kind: 'important',
+        paragraphs: [
+          [
+            { text: '这是一个紧急修复版本。', strong: true },
+            { text: ' 建议受影响的群晖（Synology）用户尽快升级。' },
+          ],
+        ],
+      },
+    ])
+    expect(parsed.sections[0]?.paragraphs).toEqual([])
+    expect(parsed.sections[0]?.items).toHaveLength(2)
+  })
+
   it('turns markdown and plain URLs into safe link segments', () => {
     expect(
       parseChangelogText('[Website](https://www.fnknock.cn/) and https://docs.fnknock.cn/'),

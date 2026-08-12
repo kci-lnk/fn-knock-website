@@ -9,11 +9,19 @@ export type ChangelogItem = {
   segments: ChangelogTextSegment[]
 }
 
+export type ChangelogAlertKind = 'note' | 'tip' | 'important' | 'warning' | 'caution'
+
+export type ChangelogAlert = {
+  kind: ChangelogAlertKind
+  paragraphs: ChangelogTextSegment[][]
+}
+
 export type ChangelogSection = {
   version: string
   label: string
   items: ChangelogItem[]
   paragraphs: ChangelogTextSegment[][]
+  alerts: ChangelogAlert[]
 }
 
 export type ParsedChangelog = {
@@ -45,6 +53,29 @@ const parseReleaseHeading = (line: string): Pick<ChangelogSection, 'version' | '
 }
 
 const isMarkdownDivider = (line: string) => /^(?:-{3,}|\*{3,}|_{3,})$/.test(line)
+
+const parseAlertParagraphs = (lines: string[]): ChangelogTextSegment[][] => {
+  const paragraphs: ChangelogTextSegment[][] = []
+  let paragraph: string[] = []
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return
+    paragraphs.push(parseChangelogText(paragraph.join(' ')))
+    paragraph = []
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      flushParagraph()
+      continue
+    }
+    paragraph.push(trimmed)
+  }
+
+  flushParagraph()
+  return paragraphs
+}
 
 export const parseChangelogText = (value: string): ChangelogTextSegment[] => {
   const segments: ChangelogTextSegment[] = []
@@ -84,8 +115,10 @@ export const parseChangelogText = (value: string): ChangelogTextSegment[] => {
 export const parseChangelog = (value: string): ParsedChangelog => {
   const parsed: ParsedChangelog = { introduction: [], sections: [] }
   let currentSection: ChangelogSection | null = null
+  const lines = value.split(/\r?\n/)
 
-  for (const rawLine of value.split(/\r?\n/)) {
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+    const rawLine = lines[lineIndex] ?? ''
     const line = rawLine.trim()
     if (!line) continue
 
@@ -96,12 +129,30 @@ export const parseChangelog = (value: string): ParsedChangelog => {
         label: releaseHeading.label,
         items: [],
         paragraphs: [],
+        alerts: [],
       }
       parsed.sections.push(currentSection)
       continue
     }
 
     if (isMarkdownDivider(line)) continue
+
+    const alertHeading = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i)
+    if (alertHeading && currentSection) {
+      const alertLines: string[] = []
+      while (lineIndex + 1 < lines.length) {
+        const quotedLine = (lines[lineIndex + 1] ?? '').match(/^\s*>\s?(.*)$/)
+        if (!quotedLine) break
+        alertLines.push(quotedLine[1] ?? '')
+        lineIndex += 1
+      }
+
+      currentSection.alerts.push({
+        kind: (alertHeading[1] ?? 'note').toLowerCase() as ChangelogAlertKind,
+        paragraphs: parseAlertParagraphs(alertLines),
+      })
+      continue
+    }
 
     const numberedItem = line.match(/^(\d+)[、.．]\s*(.+)$/)
     if (numberedItem && currentSection) {

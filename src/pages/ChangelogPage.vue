@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ArrowUpRight, RefreshCw } from 'lucide-vue-next'
+import { ArrowUpRight, CircleAlert, RefreshCw } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import InlineChangelogText from '@/components/changelog/InlineChangelogText.vue'
 import { retryLatestRelease, useLatestRelease } from '@/composables/useLatestRelease'
 import { siteConfig } from '@/config/site'
-import { parseChangelog } from '@/lib/changelog'
+import { parseChangelog, type ChangelogAlertKind } from '@/lib/changelog'
 
 const { t } = useI18n()
 const { releaseNotes, status, version } = useLatestRelease()
 const changelog = computed(() => parseChangelog(releaseNotes.value))
 const isWaiting = computed(() => status.value === 'idle' || status.value === 'loading')
+const alertLabels: Record<ChangelogAlertKind, string> = {
+  note: 'Note',
+  tip: 'Tip',
+  important: 'Important',
+  warning: 'Warning',
+  caution: 'Caution',
+}
 </script>
 
 <template>
@@ -97,6 +104,24 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
               </header>
 
               <div class="release-body">
+                <div v-if="section.alerts.length" class="release-alerts">
+                  <aside
+                    v-for="(alert, alertIndex) in section.alerts"
+                    :key="`${alert.kind}-${alertIndex}`"
+                    class="release-alert"
+                    :class="`release-alert--${alert.kind}`"
+                    :aria-label="alertLabels[alert.kind]"
+                  >
+                    <p class="release-alert__title">
+                      <CircleAlert aria-hidden="true" />
+                      {{ alertLabels[alert.kind] }}
+                    </p>
+                    <p v-for="(paragraph, index) in alert.paragraphs" :key="index">
+                      <InlineChangelogText :segments="paragraph" />
+                    </p>
+                  </aside>
+                </div>
+
                 <ol v-if="section.items.length" class="release-items">
                   <li v-for="item in section.items" :key="item.number">
                     <span class="release-item-number">{{ item.number }}.</span>
@@ -367,6 +392,58 @@ const isWaiting = computed(() => status.value === 'idle' || status.value === 'lo
 .release-items {
   display: grid;
   gap: 0.8rem;
+}
+
+.release-alerts {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+
+.release-alert {
+  --release-alert-color: #2563eb;
+
+  background: color-mix(in srgb, var(--release-alert-color) 7%, transparent);
+  border-left: 0.22rem solid var(--release-alert-color);
+  border-radius: 0.35rem;
+  color: #3f4a5a;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  padding: 0.75rem 0.9rem;
+}
+
+.release-alert--tip {
+  --release-alert-color: #15803d;
+}
+
+.release-alert--important {
+  --release-alert-color: #7e22ce;
+}
+
+.release-alert--warning {
+  --release-alert-color: #a16207;
+}
+
+.release-alert--caution {
+  --release-alert-color: #dc2626;
+}
+
+.release-alert .release-alert__title {
+  align-items: center;
+  color: var(--release-alert-color);
+  display: flex;
+  font-weight: 700;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.release-alert__title svg {
+  height: 0.95rem;
+  width: 0.95rem;
+}
+
+.release-alert p + p {
+  margin-top: 0.35rem;
 }
 
 .release-items li {
