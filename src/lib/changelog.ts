@@ -54,6 +54,8 @@ const parseReleaseHeading = (line: string): Pick<ChangelogSection, 'version' | '
 
 const isMarkdownDivider = (line: string) => /^(?:-{3,}|\*{3,}|_{3,})$/.test(line)
 
+const isMarkdownHeading = (line: string) => /^#{1,6}\s+/.test(line)
+
 const parseAlertParagraphs = (lines: string[]): ChangelogTextSegment[][] => {
   const paragraphs: ChangelogTextSegment[][] = []
   let paragraph: string[] = []
@@ -136,6 +138,10 @@ export const parseChangelog = (value: string): ParsedChangelog => {
     }
 
     if (isMarkdownDivider(line)) continue
+
+    // Version headings are handled above; discard all other Markdown headings
+    // instead of rendering their raw `#` markers as changelog text.
+    if (isMarkdownHeading(line)) continue
 
     const alertHeading = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i)
     if (alertHeading && currentSection) {

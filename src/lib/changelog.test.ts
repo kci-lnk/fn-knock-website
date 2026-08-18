@@ -41,6 +41,23 @@ describe('changelog parser', () => {
     expect(parsed.sections.every((section) => section.paragraphs.length === 0)).toBe(true)
   })
 
+  it('ignores non-release markdown headings', () => {
+    const parsed = parseChangelog(`## 新增功能
+
+2.3.2更新：
+1、新增第三方导航面板同步功能
+
+## 修复问题
+2、修复导航面板显示问题`)
+
+    expect(parsed.introduction).toEqual([])
+    expect(parsed.sections[0]?.paragraphs).toEqual([])
+    expect(parsed.sections[0]?.items.map((item) => item.segments)).toEqual([
+      [{ text: '新增第三方导航面板同步功能' }],
+      [{ text: '修复导航面板显示问题' }],
+    ])
+  })
+
   it('parses GitHub-style alerts without leaking blockquote markers', () => {
     const parsed = parseChangelog(`# fn-knock 2.2.5
 
