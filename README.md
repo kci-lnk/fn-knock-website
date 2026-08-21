@@ -14,7 +14,7 @@ bun run dev
 
 `VITE_API_BASE_URL` 控制前端认证请求的 API 地址；未配置时使用生产 API。
 `VITE_RELEASE_API_URL` 控制全站版本号与 `/changelog` 更新日志的数据地址；
-默认请求 `https://get.fnknock.cn/?info=release`。
+默认请求 `https://cor.fnknock.cn/latest.json`。
 
 ## 前端目录
 

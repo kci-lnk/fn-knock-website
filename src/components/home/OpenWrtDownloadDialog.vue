@@ -2,11 +2,26 @@
 import { Cpu, Download, Server, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import BaseDialog from '@/components/ui/BaseDialog.vue'
-import { openWrtDownloads, resolveOpenWrtDownloadUrl } from '@/config/home'
+import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
+import { openWrtDownloads, type OpenWrtPackageFormat } from '@/config/home'
 
 defineProps<{ open: boolean; dialogId: string }>()
-defineEmits<{ close: [] }>()
+const emit = defineEmits<{ close: [] }>()
 const { t } = useI18n()
+const { resolveDownloadUrl } = useReleaseDownloads()
+
+const handleDownloadClick = (
+  event: MouseEvent,
+  packageType: OpenWrtPackageFormat,
+  architecture: string,
+) => {
+  if (!resolveDownloadUrl(packageType, architecture)) {
+    event.preventDefault()
+    return
+  }
+
+  emit('close')
+}
 </script>
 
 <template>
@@ -78,21 +93,23 @@ const { t } = useI18n()
         <div class="mt-3 grid grid-cols-2 gap-2">
           <a
             :id="index === 0 ? 'openwrt-download-first-link' : undefined"
-            :href="resolveOpenWrtDownloadUrl(item.arch, 'apk')"
+            :href="resolveDownloadUrl('apk', item.arch) || undefined"
+            :aria-disabled="!resolveDownloadUrl('apk', item.arch) || undefined"
             target="_blank"
             rel="noopener noreferrer"
             class="openwrt-dialog-download"
-            @click="$emit('close')"
+            @click="handleDownloadClick($event, 'apk', item.arch)"
           >
             <span>APK 25.12+</span>
             <Download class="h-3.5 w-3.5" aria-hidden="true" />
           </a>
           <a
-            :href="resolveOpenWrtDownloadUrl(item.arch, 'ipk')"
+            :href="resolveDownloadUrl('ipk', item.arch) || undefined"
+            :aria-disabled="!resolveDownloadUrl('ipk', item.arch) || undefined"
             target="_blank"
             rel="noopener noreferrer"
             class="openwrt-dialog-download"
-            @click="$emit('close')"
+            @click="handleDownloadClick($event, 'ipk', item.arch)"
           >
             <span>IPK 24.10/{{ t('home.downloads.legacy') }}</span>
             <Download class="h-3.5 w-3.5" aria-hidden="true" />

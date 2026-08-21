@@ -5,6 +5,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { openWrtDownloads } from '@/config/home'
 import HomeDownloadActions from './HomeDownloadActions.vue'
 
+vi.mock('@/composables/useReleaseDownloads', () => ({
+  useReleaseDownloads: () => ({
+    resolveDownloadUrl: (packageType: string, architecture: string) =>
+      `https://cdn.fnknock.cn/files/current/${packageType}/${architecture}`,
+  }),
+}))
+
 let wrapper: VueWrapper | undefined
 
 const mountDownloadActions = () => {
@@ -61,6 +68,15 @@ afterEach(() => {
 })
 
 describe('HomeDownloadActions', () => {
+  it('shows a concise subtitle below the platform actions', () => {
+    const mounted = mountDownloadActions()
+
+    expect(mounted.text()).toContain(
+      '选择适合你的平台，几分钟内完成部署，安全连接每一台 NAS、软路由与家庭服务器。',
+    )
+    expect(mounted.text()).not.toContain('OpenWrt 25.12+')
+  })
+
   it('connects both disclosure triggers to persistent controlled panels', () => {
     const mounted = mountDownloadActions()
     const { fnOsPanel, fnOsPanelId, fnOsTrigger, openWrtPanel, openWrtPanelId, openWrtTrigger } =
@@ -127,8 +143,8 @@ describe('HomeDownloadActions', () => {
     const openWrtLinks = openWrtPanel.findAll('a.download-format-link')
 
     expect(fnOsLinks.map((link) => link.attributes('href'))).toEqual([
-      'https://get.fnknock.cn/',
-      'https://get.fnknock.cn/?arch=arm64',
+      'https://cdn.fnknock.cn/files/current/fpk/amd64',
+      'https://cdn.fnknock.cn/files/current/fpk/arm64',
     ])
     expect(mounted.get('.download-action--docker').attributes('to')).toBe('/docker')
     expect(mounted.get('.download-action--macos').attributes('to')).toBe('/macos')
@@ -138,11 +154,10 @@ describe('HomeDownloadActions', () => {
     openWrtLinks.forEach((link, index) => {
       const packageIndex = Math.floor(index / 2)
       const expectedFormat = index % 2 === 0 ? 'apk' : 'ipk'
-      const url = new URL(link.attributes('href')!)
 
-      expect(`${url.origin}${url.pathname}`).toBe('https://get.fnknock.cn/')
-      expect(url.searchParams.get('type')).toBe(expectedFormat)
-      expect(url.searchParams.get('arch')).toBe(openWrtDownloads[packageIndex]?.arch)
+      expect(link.attributes('href')).toBe(
+        `https://cdn.fnknock.cn/files/current/${expectedFormat}/${openWrtDownloads[packageIndex]?.arch}`,
+      )
     })
   })
 
@@ -168,8 +183,8 @@ describe('HomeDownloadActions', () => {
 
     const links = dialog?.querySelectorAll<HTMLAnchorElement>('a.openwrt-dialog-download') ?? []
     expect(links).toHaveLength(openWrtDownloads.length * 2)
-    expect(links[0]?.href).toBe('https://get.fnknock.cn/?type=apk&arch=x86_64')
-    expect(links[1]?.href).toBe('https://get.fnknock.cn/?type=ipk&arch=x86_64')
+    expect(links[0]?.href).toBe('https://cdn.fnknock.cn/files/current/apk/x86_64')
+    expect(links[1]?.href).toBe('https://cdn.fnknock.cn/files/current/ipk/x86_64')
 
     dialog?.querySelector<HTMLButtonElement>('[aria-label="关闭 OpenWrt 下载窗口"]')?.click()
     await nextTick()

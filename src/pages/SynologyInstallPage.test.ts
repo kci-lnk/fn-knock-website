@@ -1,5 +1,12 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+vi.mock('@/composables/useReleaseDownloads', () => ({
+  useReleaseDownloads: () => ({
+    resolveDownloadUrl: (packageType: string, architecture: string) =>
+      `https://cdn.fnknock.cn/files/current/${packageType}/${architecture}`,
+  }),
+}))
 
 import { en, jaJP, koKR, zhCN, zhHant } from '@/i18n/messages'
 import SynologyInstallPage from './SynologyInstallPage.vue'
@@ -21,15 +28,10 @@ describe('SynologyInstallPage', () => {
       'armv7',
     ])
 
-    expect(
-      links.map((link) => {
-        const url = new URL(link.attributes('href')!)
-        return [url.searchParams.get('type'), url.searchParams.get('arch')]
-      }),
-    ).toEqual([
-      ['synology', 'x86_64'],
-      ['synology', 'armv8'],
-      ['synology', 'armv7'],
+    expect(links.map((link) => link.attributes('href'))).toEqual([
+      'https://cdn.fnknock.cn/files/current/synology/x86_64',
+      'https://cdn.fnknock.cn/files/current/synology/armv8',
+      'https://cdn.fnknock.cn/files/current/synology/armv7',
     ])
   })
 

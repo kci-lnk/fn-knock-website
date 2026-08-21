@@ -1,11 +1,12 @@
 import { readonly, reactive, toRefs } from 'vue'
-import { fetchLatestRelease } from '@/services/release'
+import { fetchLatestRelease, type ReleaseDownloads } from '@/services/release'
 
 type ReleaseStatus = 'idle' | 'loading' | 'success' | 'error'
 
 const state = reactive({
   version: '',
   releaseNotes: '',
+  downloads: {} as ReleaseDownloads,
   status: 'idle' as ReleaseStatus,
 })
 
@@ -20,6 +21,7 @@ export const loadLatestRelease = (): Promise<void> => {
     .then((release) => {
       state.version = release.version
       state.releaseNotes = release.releaseNotes
+      state.downloads = release.downloads
       state.status = 'success'
     })
     .catch(() => {

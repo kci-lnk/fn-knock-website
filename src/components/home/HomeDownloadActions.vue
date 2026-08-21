@@ -15,10 +15,13 @@ import dockerMark from '@/assets/docker-mark.svg'
 import fnOsLogo from '@/assets/fnos-logo.svg'
 import OpenWrtDownloadDialog from '@/components/home/OpenWrtDownloadDialog.vue'
 import { useDownloadMenu } from '@/composables/useDownloadMenu'
-import { fnOsDownloads, openWrtDownloads, resolveOpenWrtDownloadUrl } from '@/config/home'
+import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
+import { fnOsDownloads, openWrtDownloads } from '@/config/home'
+import type { DownloadPackageType } from '@/services/release'
 
 const componentId = useId()
 const { t } = useI18n()
+const { resolveDownloadUrl } = useReleaseDownloads()
 const fnOsTriggerId = `${componentId}-fnos-trigger`
 const fnOsPanelId = `${componentId}-fnos-downloads`
 const openWrtTriggerId = `${componentId}-openwrt-trigger`
@@ -57,6 +60,19 @@ const handleOpenWrtButtonClick = () => {
 
 const handleOpenWrtPointerEnter = (event: PointerEvent) => {
   if (!isMobileOpenWrt.value) handleDownloadPointerEnter('openwrt', event)
+}
+
+const handlePackageDownloadClick = (
+  event: MouseEvent,
+  packageType: DownloadPackageType,
+  architecture: string,
+) => {
+  if (!resolveDownloadUrl(packageType, architecture)) {
+    event.preventDefault()
+    return
+  }
+
+  closeDownloadMenus()
 }
 
 onMounted(() => {
@@ -118,12 +134,13 @@ onBeforeUnmount(() => {
           >
             <a
               v-for="item in fnOsDownloads"
-              :key="item.url"
-              :href="item.url"
+              :key="item.arch"
+              :href="resolveDownloadUrl('fpk', item.arch) || undefined"
+              :aria-disabled="!resolveDownloadUrl('fpk', item.arch) || undefined"
               target="_blank"
               rel="noopener noreferrer"
               class="download-menu-option group flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-800 transition hover:bg-blue-50"
-              @click="closeDownloadMenus"
+              @click="handlePackageDownloadClick($event, 'fpk', item.arch)"
             >
               <span class="download-menu-icon">
                 <Cpu class="h-4 w-4" aria-hidden="true" />
@@ -203,21 +220,23 @@ onBeforeUnmount(() => {
               </span>
               <span class="download-format-actions col-start-2 flex flex-wrap gap-2">
                 <a
-                  :href="resolveOpenWrtDownloadUrl(item.arch, 'apk')"
+                  :href="resolveDownloadUrl('apk', item.arch) || undefined"
+                  :aria-disabled="!resolveDownloadUrl('apk', item.arch) || undefined"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="download-format-link"
-                  @click="closeDownloadMenus"
+                  @click="handlePackageDownloadClick($event, 'apk', item.arch)"
                 >
                   APK 25.12+
                   <Download class="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
                 <a
-                  :href="resolveOpenWrtDownloadUrl(item.arch, 'ipk')"
+                  :href="resolveDownloadUrl('ipk', item.arch) || undefined"
+                  :aria-disabled="!resolveDownloadUrl('ipk', item.arch) || undefined"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="download-format-link"
-                  @click="closeDownloadMenus"
+                  @click="handlePackageDownloadClick($event, 'ipk', item.arch)"
                 >
                   IPK 24.10/{{ t('home.downloads.legacy') }}
                   <Download class="h-3.5 w-3.5" aria-hidden="true" />
@@ -292,8 +311,8 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <p class="mx-auto mt-5 max-w-2xl text-center text-sm leading-6 text-slate-500">
-      {{ t('home.downloads.note') }}
+    <p class="mx-auto mt-5 max-w-3xl text-center text-base leading-7 text-slate-600">
+      {{ t('home.downloads.subtitle') }}
     </p>
   </div>
 

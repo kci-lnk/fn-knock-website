@@ -1055,12 +1055,6 @@
                     <td>静态浏览不要求登录；状态检查随官网页面加载</td>
                   </tr>
                   <tr>
-                    <td><code>get.fnknock.cn</code></td>
-                    <td>按平台和架构提供下载跳转或安装资源</td>
-                    <td>来源 IP、查询参数、目标平台/架构、访问元数据</td>
-                    <td>仅在用户点击下载时触发</td>
-                  </tr>
-                  <tr>
                     <td><code>docs.fnknock.cn</code></td>
                     <td>官方产品文档</td>
                     <td>来源 IP、文档路径、User-Agent、访问元数据</td>

@@ -1,6 +1,6 @@
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() || 'https://api.fnknock.cn/'
 const releaseApiUrl =
-  import.meta.env.VITE_RELEASE_API_URL?.trim() || 'https://get.fnknock.cn/?info=release'
+  import.meta.env.VITE_RELEASE_API_URL?.trim() || 'https://cor.fnknock.cn/latest.json'
 
 export const siteConfig = {
   docsUrl: 'https://docs.fnknock.cn',

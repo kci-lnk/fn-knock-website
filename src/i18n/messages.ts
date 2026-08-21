@@ -243,7 +243,7 @@ export const zhCN = {
       dialogTitle: '下载 OpenWrt 包',
       dialogDescription: '选择设备架构和对应的软件包格式',
       dialogClose: '关闭 OpenWrt 下载窗口',
-      note: 'macOS 13+ 支持 Intel 与 Apple Silicon 一键安装；Windows 提供 x86_64 安装包，群晖 DSM 提供三种原生 SPK，Linux 使用一键安装器。OpenWrt 25.12+ 使用 APK，24.10 与旧版使用 IPK。',
+      subtitle: '选择适合你的平台，几分钟内完成部署，安全连接每一台 NAS、软路由与家庭服务器。',
     },
     architecture: {
       eyebrow: 'Turbocharged Architecture',
@@ -772,7 +772,7 @@ export const zhHant = {
       dialogTitle: '下載 OpenWrt 套件',
       dialogDescription: '選擇裝置架構和對應的套件格式',
       dialogClose: '關閉 OpenWrt 下載視窗',
-      note: 'macOS 13+ 支援 Intel 與 Apple Silicon 一鍵安裝；Windows 提供 x86_64 安裝套件，群暉 DSM 提供三種原生 SPK，Linux 使用一鍵安裝器。OpenWrt 25.12+ 使用 APK，24.10 與舊版使用 IPK。',
+      subtitle: '選擇適合你的平台，幾分鐘內完成部署，安全連線每一台 NAS、軟路由與家庭伺服器。',
     },
     architecture: {
       eyebrow: 'Turbocharged Architecture',
@@ -1294,7 +1294,8 @@ export const en = {
       dialogTitle: 'Download OpenWrt package',
       dialogDescription: 'Choose your device architecture and package format',
       dialogClose: 'Close OpenWrt download dialog',
-      note: 'macOS 13+ supports one-line installs on Intel and Apple Silicon. Windows uses a native x86_64 installer, Synology DSM provides three native SPKs, and Linux uses a one-line installer. OpenWrt 25.12+ uses APK; older releases use IPK.',
+      subtitle:
+        'Choose your platform and securely connect every NAS, router, and home server in minutes.',
     },
     architecture: {
       eyebrow: 'Turbocharged Architecture',
@@ -1844,7 +1845,7 @@ export const koKR = {
       dialogTitle: 'OpenWrt 패키지 다운로드',
       dialogDescription: '장치 아키텍처와 패키지 형식을 선택하세요',
       dialogClose: 'OpenWrt 다운로드 창 닫기',
-      note: 'macOS 13+는 Intel과 Apple Silicon 원라인 설치를 지원합니다. Windows는 x86_64 설치 프로그램, Synology DSM은 세 가지 네이티브 SPK, Linux는 원라인 설치 프로그램을 제공합니다. OpenWrt 25.12+는 APK, 이전 버전은 IPK를 사용합니다.',
+      subtitle: '플랫폼을 선택하고 몇 분 안에 모든 NAS, 라우터와 홈 서버를 안전하게 연결하세요.',
     },
     architecture: {
       eyebrow: 'Turbocharged Architecture',
@@ -2392,7 +2393,8 @@ export const jaJP = {
       dialogTitle: 'OpenWrt パッケージをダウンロード',
       dialogDescription: 'デバイスのアーキテクチャとパッケージ形式を選択してください',
       dialogClose: 'OpenWrt ダウンロード画面を閉じる',
-      note: 'macOS 13+ は Intel と Apple Silicon のワンラインインストールに対応します。Windows は x86_64 インストーラー、Synology DSM は 3 種類のネイティブ SPK、Linux はワンラインインストーラーを提供します。OpenWrt 25.12+ は APK、旧版は IPK を使用します。',
+      subtitle:
+        'プラットフォームを選ぶだけで、すべての NAS、ルーター、ホームサーバーへ数分で安全に接続できます。',
     },
     architecture: {
       eyebrow: 'Turbocharged Architecture',

@@ -5,9 +5,10 @@ import { useI18n } from 'vue-i18n'
 import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
-import { createDownloadUrl } from '@/config/downloads'
+import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
 
-const downloadUrl = createDownloadUrl({ type: 'windows', arch: 'x86_64' })
+const { resolveDownloadUrl } = useReleaseDownloads()
+const downloadUrl = computed(() => resolveDownloadUrl('windows', 'x86_64'))
 const projectGuideUrl =
   'https://github.com/kci-lnk/fn-knock-turborepo/tree/main/apps/fn-knock-desktop'
 
@@ -72,7 +73,8 @@ const ports = computed<PortItem[]>(() => [
             class="download-row mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
           >
             <a
-              :href="downloadUrl"
+              :href="downloadUrl || undefined"
+              :aria-disabled="!downloadUrl || undefined"
               class="primary-download inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold"
             >
               <Download class="h-4 w-4" />

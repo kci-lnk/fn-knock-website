@@ -1,5 +1,12 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+vi.mock('@/composables/useReleaseDownloads', () => ({
+  useReleaseDownloads: () => ({
+    resolveDownloadUrl: (packageType: string, architecture: string) =>
+      `https://cdn.fnknock.cn/files/current/${packageType}/${architecture}`,
+  }),
+}))
 
 import MacInstallPage from './MacInstallPage.vue'
 
@@ -17,10 +24,10 @@ describe('MacInstallPage', () => {
       'curl -fsSL https://cdn.fnknock.cn/macos/install.sh | sudo bash',
     )
     expect(wrapper.get('[data-testid="macos-amd64-download"]').attributes('href')).toBe(
-      'https://get.fnknock.cn/?type=macos&arch=amd64',
+      'https://cdn.fnknock.cn/files/current/macos/amd64',
     )
     expect(wrapper.get('[data-testid="macos-arm64-download"]').attributes('href')).toBe(
-      'https://get.fnknock.cn/?type=macos&arch=arm64',
+      'https://cdn.fnknock.cn/files/current/macos/arm64',
     )
     expect(wrapper.text()).toContain('/Library/Application Support/FnKnock')
     expect(wrapper.text()).toContain('不支持 iptables')

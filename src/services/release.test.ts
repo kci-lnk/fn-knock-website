@@ -15,11 +15,51 @@ describe('release service', () => {
     await expect(fetchLatestRelease()).resolves.toEqual({
       version: '2.0.9',
       releaseNotes: '2.0.9 update',
+      downloads: {},
     })
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://get.fnknock.cn/?info=release',
+      'https://cor.fnknock.cn/latest.json',
       expect.objectContaining({ headers: { Accept: 'application/json' } }),
     )
+  })
+
+  it('extracts direct CDN package URLs from the release manifest', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        Response.json({
+          version: '2.3.3',
+          release_notes: '2.3.3 update',
+          packages: {
+            fpk: {
+              amd64: {
+                download_url: 'https://cdn.fnknock.cn/files/2.3.3/fn-knock-2.3.3-fnos-amd64.fpk',
+              },
+            },
+            macos: {
+              arm64: {
+                download_url:
+                  'https://cdn.fnknock.cn/files/2.3.3/macos/arm64/fn-knock-macos-2.3.3-arm64.tar.gz',
+              },
+            },
+            windows: {
+              unsafe: { download_url: 'https://example.com/untrusted.exe' },
+            },
+          },
+        }),
+      ),
+    )
+
+    await expect(fetchLatestRelease()).resolves.toMatchObject({
+      downloads: {
+        fpk: {
+          amd64: 'https://cdn.fnknock.cn/files/2.3.3/fn-knock-2.3.3-fnos-amd64.fpk',
+        },
+        macos: {
+          arm64: 'https://cdn.fnknock.cn/files/2.3.3/macos/arm64/fn-knock-macos-2.3.3-arm64.tar.gz',
+        },
+      },
+    })
   })
 
   it('rejects malformed responses instead of publishing an empty version', async () => {

@@ -1,5 +1,3 @@
-import { createDownloadUrl, downloadBaseUrl } from '@/config/downloads'
-
 export type OpenWrtPackageFormat = 'apk' | 'ipk'
 export type StatTone = 'blue' | 'violet' | 'emerald' | 'amber'
 export type StatIcon = 'shield' | 'lock' | 'network' | 'eye'
@@ -7,8 +5,6 @@ export type ConsoleIcon =
   'gauge' | 'network' | 'shield' | 'fingerprint' | 'key' | 'file' | 'globe' | 'settings'
 
 export const homeLinks = {
-  amd64Download: downloadBaseUrl,
-  arm64Download: createDownloadUrl({ arch: 'arm64' }),
   dockerHub: 'https://hub.docker.com/r/kcilnk/fn-knock',
   dockerMirrorImage: 'hub.fnknock.cn/kcilnk/fn-knock:latest',
   dockerHubImage: 'kcilnk/fn-knock:latest',
@@ -18,11 +14,11 @@ export const homeLinks = {
 export const fnOsDownloads = [
   {
     id: 'fnosX64',
-    url: homeLinks.amd64Download,
+    arch: 'amd64',
   },
   {
     id: 'fnosArm',
-    url: homeLinks.arm64Download,
+    arch: 'arm64',
   },
 ] as const
 
@@ -97,6 +93,3 @@ export const consoleNavItems: ReadonlyArray<{
   { id: 'ddns', icon: 'globe' },
   { id: 'system', icon: 'settings' },
 ]
-
-export const resolveOpenWrtDownloadUrl = (arch: string, format: OpenWrtPackageFormat) =>
-  createDownloadUrl({ type: format, arch })

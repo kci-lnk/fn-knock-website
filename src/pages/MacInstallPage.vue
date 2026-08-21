@@ -6,11 +6,12 @@ import DockerCodeBlock from '@/components/install/DockerCodeBlock.vue'
 import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
-import { createDownloadUrl } from '@/config/downloads'
+import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
 
 const installCommand = 'curl -fsSL https://cdn.fnknock.cn/macos/install.sh | sudo bash'
-const intelDownloadUrl = createDownloadUrl({ type: 'macos', arch: 'amd64' })
-const appleSiliconDownloadUrl = createDownloadUrl({ type: 'macos', arch: 'arm64' })
+const { resolveDownloadUrl } = useReleaseDownloads()
+const intelDownloadUrl = computed(() => resolveDownloadUrl('macos', 'amd64'))
+const appleSiliconDownloadUrl = computed(() => resolveDownloadUrl('macos', 'arm64'))
 const { t } = useI18n()
 
 const ports = computed<PortItem[]>(() => [
@@ -94,7 +95,12 @@ const ports = computed<PortItem[]>(() => [
         </div>
         <p class="section-description">{{ t('install.macos.directDownloadsDescription') }}</p>
         <div class="architecture-grid mt-6">
-          <a :href="intelDownloadUrl" class="architecture-card" data-testid="macos-amd64-download">
+          <a
+            :href="intelDownloadUrl || undefined"
+            :aria-disabled="!intelDownloadUrl || undefined"
+            class="architecture-card"
+            data-testid="macos-amd64-download"
+          >
             <span class="architecture-icon"><Cpu class="h-5 w-5" aria-hidden="true" /></span>
             <span>
               <strong>{{ t('install.macos.intel') }}</strong>
@@ -103,7 +109,8 @@ const ports = computed<PortItem[]>(() => [
             <Download class="h-4 w-4" aria-hidden="true" />
           </a>
           <a
-            :href="appleSiliconDownloadUrl"
+            :href="appleSiliconDownloadUrl || undefined"
+            :aria-disabled="!appleSiliconDownloadUrl || undefined"
             class="architecture-card"
             data-testid="macos-arm64-download"
           >

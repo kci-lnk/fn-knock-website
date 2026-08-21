@@ -13,9 +13,10 @@ import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
 import SynologyWaveBackground from '@/components/install/SynologyWaveBackground.vue'
-import { createDownloadUrl } from '@/config/downloads'
+import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
 
 const { t } = useI18n()
+const { resolveDownloadUrl } = useReleaseDownloads()
 const synologyGuideUrl = 'https://docs.fnknock.cn/quick-start/synology-deployment'
 
 const installSteps = ['step1', 'step2', 'step3'] as const
@@ -35,10 +36,7 @@ const downloads = [
     labelKey: 'install.synology.downloadArmv7',
     hintKey: 'install.synology.downloadArmv7Hint',
   },
-].map((item) => ({
-  ...item,
-  url: createDownloadUrl({ type: 'synology', arch: item.arch }),
-}))
+]
 const hoveredDownloadArch = ref<string | null>(null)
 const focusedDownloadArch = ref<string | null>(null)
 const activeDownloadArch = computed(() => focusedDownloadArch.value ?? hoveredDownloadArch.value)
@@ -106,7 +104,8 @@ const ports = computed<PortItem[]>(() => [
             <a
               v-for="item in downloads"
               :key="item.arch"
-              :href="item.url"
+              :href="resolveDownloadUrl('synology', item.arch) || undefined"
+              :aria-disabled="!resolveDownloadUrl('synology', item.arch) || undefined"
               :data-synology-arch="item.arch"
               class="primary-download min-h-12 rounded-xl px-4 py-3"
               :class="[
