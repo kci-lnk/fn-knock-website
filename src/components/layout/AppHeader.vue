@@ -27,7 +27,7 @@ const { t } = useI18n()
           >{{ t('header.brand') }}</span
         >
         <span
-          class="brand-name truncate text-base font-semibold tracking-tight text-slate-950 sm:hidden"
+          class="brand-name mobile-brand-name truncate text-base font-semibold tracking-tight text-slate-950 sm:hidden"
           >Knock</span
         >
       </RouterLink>
@@ -158,5 +158,24 @@ const { t } = useI18n()
 .app-header--dark .login-button:hover {
   background: rgb(111 168 226 / 0.14);
   color: #fff;
+}
+@media (max-width: 767px) {
+  .github-button,
+  .docs-button,
+  .login-button {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+  .app-header button {
+    min-height: 2.75rem;
+  }
+}
+@media (max-width: 360px) {
+  .mobile-brand-name {
+    display: none;
+  }
+  .login-button :deep(svg) {
+    display: none;
+  }
 }
 </style>

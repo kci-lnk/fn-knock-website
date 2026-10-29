@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { defineComponent } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { useHomeTelemetry } from './useHomeTelemetry'
@@ -45,26 +45,48 @@ const createDesktopMedia = (initialMatches: boolean) => {
   return { addEventListener, mediaQuery, removeEventListener, setMatches }
 }
 
-const mountTelemetry = (desktopMatches = true) => {
+const mountTelemetry = (desktopMatches = true, inViewport = true, reducedMotion = false) => {
   const desktopMedia = createDesktopMedia(desktopMatches)
-  vi.spyOn(window, 'matchMedia').mockReturnValue(desktopMedia.mediaQuery)
+  const motionMedia = createDesktopMedia(reducedMotion)
+  vi.spyOn(window, 'matchMedia').mockImplementation((query) =>
+    query.includes('reduced-motion') ? motionMedia.mediaQuery : desktopMedia.mediaQuery,
+  )
+  let setInViewport!: (visible: boolean) => void
+  const disconnect = vi.fn()
+  vi.stubGlobal(
+    'IntersectionObserver',
+    class {
+      constructor(callback: IntersectionObserverCallback) {
+        setInViewport = (visible) =>
+          callback(
+            [{ isIntersecting: visible } as IntersectionObserverEntry],
+            this as unknown as IntersectionObserver,
+          )
+      }
+      observe = vi.fn()
+      disconnect = disconnect
+    },
+  )
 
   let telemetry!: ReturnType<typeof useHomeTelemetry>
   const wrapper = mount(
     defineComponent({
       setup() {
-        telemetry = useHomeTelemetry()
-        return () => null
+        const preview = ref<HTMLElement | null>(null)
+        telemetry = useHomeTelemetry(preview)
+        return () => h('div', { ref: preview })
       },
     }),
   )
 
-  return { desktopMedia, telemetry, wrapper }
+  setInViewport(inViewport)
+  return { desktopMedia, motionMedia, setInViewport, disconnect, telemetry, wrapper }
 }
 
 afterEach(() => {
   vi.useRealTimers()
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 
   if (originalVisibilityDescriptor) {
     Object.defineProperty(document, 'visibilityState', originalVisibilityDescriptor)
@@ -146,11 +168,40 @@ describe('useHomeTelemetry', () => {
     wrapper.unmount()
   })
 
+  it('only updates while the preview intersects the viewport', () => {
+    vi.useFakeTimers()
+    setDocumentVisibility('visible')
+    const { telemetry, setInViewport, wrapper } = mountTelemetry(true, false)
+    expect(vi.getTimerCount()).toBe(0)
+    const bars = [...telemetry.trafficBars.value]
+    vi.advanceTimersByTime(10_000)
+    expect(telemetry.trafficBars.value).toEqual(bars)
+    setInViewport(true)
+    expect(vi.getTimerCount()).toBe(2)
+    setInViewport(false)
+    expect(vi.getTimerCount()).toBe(0)
+    wrapper.unmount()
+  })
+
+  it('stays static for reduced motion and responds to preference changes', () => {
+    vi.useFakeTimers()
+    setDocumentVisibility('visible')
+    const { motionMedia, telemetry, wrapper } = mountTelemetry(true, true, true)
+    expect(vi.getTimerCount()).toBe(0)
+    vi.advanceTimersByTime(10_000)
+    expect(telemetry.blockedCount.value).toBe(142)
+    motionMedia.setMatches(false)
+    expect(vi.getTimerCount()).toBe(2)
+    motionMedia.setMatches(true)
+    expect(vi.getTimerCount()).toBe(0)
+    wrapper.unmount()
+  })
+
   it('clears timers and listeners when its component unmounts', () => {
     vi.useFakeTimers()
     setDocumentVisibility('visible')
     const removeDocumentListener = vi.spyOn(document, 'removeEventListener')
-    const { desktopMedia, wrapper } = mountTelemetry()
+    const { desktopMedia, motionMedia, disconnect, wrapper } = mountTelemetry()
 
     expect(vi.getTimerCount()).toBe(2)
 
@@ -158,6 +209,8 @@ describe('useHomeTelemetry', () => {
 
     expect(vi.getTimerCount()).toBe(0)
     expect(desktopMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
+    expect(motionMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
+    expect(disconnect).toHaveBeenCalledOnce()
     expect(removeDocumentListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
   })
 })

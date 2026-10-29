@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Cpu, Download, FolderOpen, ShieldAlert, Terminal } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import DockerCodeBlock from '@/components/install/DockerCodeBlock.vue'
+import DownloadAvailability from '@/components/install/DownloadAvailability.vue'
 import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
@@ -94,6 +95,7 @@ const ports = computed<PortItem[]>(() => [
           <span>{{ t('install.macos.architectureNote') }}</span>
         </div>
         <p class="section-description">{{ t('install.macos.directDownloadsDescription') }}</p>
+        <DownloadAvailability />
         <div class="architecture-grid mt-6">
           <a
             :href="intelDownloadUrl || undefined"
@@ -105,6 +107,7 @@ const ports = computed<PortItem[]>(() => [
             <span>
               <strong>{{ t('install.macos.intel') }}</strong>
               <small>{{ t('install.macos.intelHint') }}</small>
+              <DownloadAvailability package-only :url="intelDownloadUrl" />
             </span>
             <Download class="h-4 w-4" aria-hidden="true" />
           </a>
@@ -118,6 +121,7 @@ const ports = computed<PortItem[]>(() => [
             <span>
               <strong>{{ t('install.macos.appleSilicon') }}</strong>
               <small>{{ t('install.macos.appleSiliconHint') }}</small>
+              <DownloadAvailability package-only :url="appleSiliconDownloadUrl" />
             </span>
             <Download class="h-4 w-4" aria-hidden="true" />
           </a>

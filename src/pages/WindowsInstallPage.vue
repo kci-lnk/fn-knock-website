@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { CheckCircle2, Download, ExternalLink, FolderOpen, ShieldCheck } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
+import DownloadAvailability from '@/components/install/DownloadAvailability.vue'
 import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
@@ -78,12 +79,16 @@ const ports = computed<PortItem[]>(() => [
               class="primary-download inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold"
             >
               <Download class="h-4 w-4" />
-              {{ t('install.windows.download') }}
+              <span
+                >{{ t('install.windows.download') }}
+                <DownloadAvailability package-only :url="downloadUrl" />
+              </span>
             </a>
             <span class="text-xs font-medium text-slate-500">{{
               t('install.windows.packageMeta')
             }}</span>
           </div>
+          <DownloadAvailability />
         </div>
 
         <div class="platform-summary">

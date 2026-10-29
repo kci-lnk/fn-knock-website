@@ -18,6 +18,9 @@ const { t } = useI18n()
 </template>
 
 <style scoped>
+.back-link {
+  min-height: 2.75rem;
+}
 .back-link--slate {
   color: #64748b;
 }

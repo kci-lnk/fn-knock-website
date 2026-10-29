@@ -1,6 +1,13 @@
 import { dockerInstallMessages } from './dockerMessages'
 
 export const zhCN = {
+  downloadFeedback: {
+    loading: '正在获取下载信息…',
+    error: '暂时无法获取下载信息，请重试。',
+    retry: '重新加载',
+    unavailable: '该架构暂无安装包',
+    preview: '界面演示 · 示例数据',
+  },
   meta: {
     description: 'fn-knock 敲门是一款面向 NAS、软路由与家庭服务器的多平台高性能安全网关。',
     home: 'fn-knock 敲门 · 多平台安全网关',
@@ -537,6 +544,13 @@ export const zhCN = {
 
 export const zhHant = {
   ...zhCN,
+  downloadFeedback: {
+    loading: '正在取得下載資訊…',
+    error: '暫時無法取得下載資訊，請重試。',
+    retry: '重新載入',
+    unavailable: '此架構暫無安裝套件',
+    preview: '介面展示 · 範例資料',
+  },
   meta: {
     description: 'fn-knock 敲門是面向 NAS、軟路由與家庭伺服器的多平台高效能安全閘道。',
     home: 'fn-knock 敲門 · 多平台安全閘道',
@@ -1045,6 +1059,13 @@ export const zhHant = {
 }
 
 export const en = {
+  downloadFeedback: {
+    loading: 'Loading downloads…',
+    error: 'Unable to load downloads. Please try again.',
+    retry: 'Try again',
+    unavailable: 'No package for this architecture',
+    preview: 'Interface preview · Sample data',
+  },
   meta: {
     description:
       'fn-knock is a high-performance, multi-platform secure gateway for NAS devices, routers, and home servers.',
@@ -1597,6 +1618,13 @@ export const en = {
 
 export const koKR = {
   ...en,
+  downloadFeedback: {
+    loading: '다운로드 정보를 불러오는 중…',
+    error: '다운로드 정보를 불러올 수 없습니다. 다시 시도해 주세요.',
+    retry: '다시 시도',
+    unavailable: '이 아키텍처의 패키지가 없습니다',
+    preview: '인터페이스 미리보기 · 예시 데이터',
+  },
   meta: {
     description: 'fn-knock은 NAS, 라우터와 홈 서버를 위한 멀티플랫폼 고성능 보안 게이트웨이입니다.',
     home: 'fn-knock · 멀티플랫폼 보안 게이트웨이',
@@ -2139,6 +2167,13 @@ export const koKR = {
 
 export const jaJP = {
   ...en,
+  downloadFeedback: {
+    loading: 'ダウンロード情報を取得中…',
+    error: 'ダウンロード情報を取得できません。もう一度お試しください。',
+    retry: '再試行',
+    unavailable: 'このアーキテクチャのパッケージはありません',
+    preview: '画面プレビュー · サンプルデータ',
+  },
   meta: {
     description:
       'fn-knock は NAS、ルーター、ホームサーバー向けのマルチプラットフォーム高性能セキュアゲートウェイです。',

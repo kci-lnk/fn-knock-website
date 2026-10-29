@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
 }
 
 .language-trigger:focus-visible {
-  outline: 2px solid rgb(37 99 235 / 0.5);
+  outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
 
@@ -197,6 +197,15 @@ onBeforeUnmount(() => {
   .language-menu-enter-active,
   .language-menu-leave-active {
     transition: none;
+  }
+}
+@media (max-width: 767px) {
+  .language-trigger {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+  .language-menu button {
+    min-height: 2.75rem;
   }
 }
 </style>

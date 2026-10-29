@@ -117,6 +117,28 @@ describe('HomeDownloadActions', () => {
     expect(openWrtPanel.isVisible()).toBe(false)
   })
 
+  it('keeps a hover-opened menu open on the first click and closes on the second', async () => {
+    const mounted = mountDownloadActions()
+    const { fnOsTrigger, fnOsPanel } = getDisclosures(mounted)
+    await mounted.get('.download-action-item').trigger('pointerenter', { pointerType: 'mouse' })
+    expect(fnOsPanel.isVisible()).toBe(true)
+    await fnOsTrigger.trigger('click')
+    expect(fnOsTrigger.attributes('aria-expanded')).toBe('true')
+    await fnOsTrigger.trigger('click')
+    expect(fnOsTrigger.attributes('aria-expanded')).toBe('false')
+  })
+
+  it('returns keyboard focus to the trigger when Escape closes a disclosure', async () => {
+    const mounted = mountDownloadActions()
+    const { fnOsTrigger, fnOsPanel } = getDisclosures(mounted)
+    await fnOsTrigger.trigger('click')
+    fnOsPanel.get('a').element.focus()
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await nextTick()
+    expect(fnOsTrigger.attributes('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(fnOsTrigger.element)
+  })
+
   it('closes an open disclosure after an outside click or Escape', async () => {
     const mounted = mountDownloadActions()
     const { fnOsTrigger, openWrtTrigger } = getDisclosures(mounted)

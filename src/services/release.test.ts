@@ -2,10 +2,33 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fetchLatestRelease } from './release'
 
 afterEach(() => {
+  vi.useRealTimers()
   vi.unstubAllGlobals()
 })
 
 describe('release service', () => {
+  it('times out a stalled response body and clears the deadline', async () => {
+    vi.useFakeTimers()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => new Promise(() => {}),
+      }),
+    )
+    const result = expect(fetchLatestRelease()).rejects.toThrow('timed out')
+    await vi.advanceTimersByTimeAsync(10_000)
+    await result
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('rejects HTTP failures without leaving a timeout behind', async () => {
+    vi.useFakeTimers()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(null, { status: 503 })))
+    await expect(fetchLatestRelease()).rejects.toThrow('503')
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
   it('loads version and release notes from the metadata endpoint', async () => {
     const fetchMock = vi
       .fn<typeof fetch>()

@@ -35,6 +35,7 @@ export const loadLatestRelease = (): Promise<void> => {
 }
 
 export const retryLatestRelease = (): Promise<void> => {
+  if (pendingRequest) return pendingRequest
   state.status = 'idle'
   return loadLatestRelease()
 }

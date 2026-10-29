@@ -51,7 +51,7 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
         </RouterLink>
       </div>
 
-      <div class="mx-auto mt-8 max-w-4xl text-center">
+      <div class="hero-copy mx-auto mt-6 max-w-6xl text-center sm:mt-8">
         <div class="flex flex-wrap justify-center gap-2">
           <span
             v-for="pill in heroPills"
@@ -62,12 +62,14 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
         </div>
         <h1
           id="home-title"
-          class="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-5xl lg:text-6xl"
+          class="mt-5 text-4xl sm:mt-6 font-extrabold leading-tight tracking-tight text-slate-950 sm:text-5xl lg:text-6xl"
         >
           {{ t('home.title')
           }}<span class="animated-title-gradient">{{ t('home.titleAccent') }}</span>
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+        <p
+          class="hero-intro mx-auto mt-4 max-w-2xl text-base leading-7 sm:mt-6 sm:leading-8 text-slate-600 sm:text-lg"
+        >
           <span class="font-bold text-slate-900">fn-knock</span>
           {{ t('home.introPrefix') }} {{ t('home.introSuffix') }}
         </p>
@@ -80,10 +82,11 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
           :key="card.id"
           class="glow-card relative rounded-lg border border-slate-200/75 bg-white/72 p-4 text-left shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition duration-200 hover:bg-white/88 sm:p-5"
         >
-          <div class="flex items-center justify-between gap-4">
-            <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{{
-              t(`home.stats.${card.id}.eyebrow`)
-            }}</span>
+          <div class="stat-heading flex items-center justify-between gap-2">
+            <span
+              class="stat-eyebrow text-xs font-semibold uppercase tracking-[0.08em] text-slate-600"
+              >{{ t(`home.stats.${card.id}.eyebrow`) }}</span
+            >
             <span class="stat-icon" :data-tone="card.tone">
               <component :is="statIcons[card.icon]" class="h-4 w-4" />
             </span>
@@ -92,7 +95,7 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
           <h2 class="mt-4 text-lg font-bold tracking-tight text-slate-950">
             {{ t(`home.stats.${card.id}.title`) }}
           </h2>
-          <p class="mt-2 text-sm leading-6 text-slate-500">
+          <p class="mt-2 text-sm leading-6 text-slate-600">
             {{ t(`home.stats.${card.id}.description`) }}
           </p>
         </article>
@@ -115,6 +118,18 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
 </template>
 
 <style scoped>
+.stat-heading {
+  align-items: center;
+  flex-wrap: nowrap;
+  min-height: 2.5rem;
+}
+.stat-eyebrow {
+  word-break: normal;
+  text-wrap: balance;
+}
+.stat-icon {
+  flex-shrink: 0;
+}
 .hero-section {
   background:
     linear-gradient(135deg, rgb(37 99 235 / 0.07), transparent 42%),
@@ -135,6 +150,7 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
   z-index: -2;
 }
 .release-pill {
+  font-variant-numeric: tabular-nums;
   align-items: center;
   background: rgb(255 255 255 / 0.72);
   border: 1px solid rgb(226 232 240 / 0.88);
@@ -145,7 +161,7 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
   font-size: 0.82rem;
   gap: 0.5rem;
   max-width: min(100%, 26rem);
-  min-height: 2.1rem;
+  min-height: 2.75rem;
   padding: 0.32rem 0.62rem 0.32rem 0.5rem;
   transition:
     background-color 0.2s ease,
@@ -156,7 +172,7 @@ const isWaitingForVersion = computed(() => status.value === 'idle' || status.val
   box-shadow: 0 8px 22px rgb(15 23 42 / 0.075);
 }
 .release-pill:focus-visible {
-  outline: 2px solid rgb(37 99 235 / 0.42);
+  outline: 2px solid #2563eb;
   outline-offset: 4px;
 }
 .release-pulse {

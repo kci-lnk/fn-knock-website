@@ -1,10 +1,10 @@
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const INITIAL_UPTIME_SECONDS = 4_365
 const DESKTOP_QUERY = '(min-width: 1024px)'
 
-export const useHomeTelemetry = () => {
+export const useHomeTelemetry = (previewRef: Ref<HTMLElement | null>) => {
   const { t } = useI18n()
   const startedAt = Date.now() - INITIAL_UPTIME_SECONDS * 1_000
   const uptimeSeconds = ref(INITIAL_UPTIME_SECONDS)
@@ -25,6 +25,9 @@ export const useHomeTelemetry = () => {
   let clockTimer: number | undefined
   let telemetryTimer: number | undefined
   let desktopMedia: MediaQueryList | undefined
+  let reducedMotionMedia: MediaQueryList | undefined
+  let observer: IntersectionObserver | undefined
+  let isInViewport = false
 
   const updateClock = () => {
     uptimeSeconds.value = Math.floor((Date.now() - startedAt) / 1_000)
@@ -47,7 +50,11 @@ export const useHomeTelemetry = () => {
   }
 
   const syncTimers = () => {
-    const shouldRun = document.visibilityState !== 'hidden' && (desktopMedia?.matches ?? true)
+    const shouldRun =
+      document.visibilityState !== 'hidden' &&
+      desktopMedia?.matches &&
+      !reducedMotionMedia?.matches &&
+      isInViewport
     stopTimers()
     if (!shouldRun) return
     updateClock()
@@ -57,14 +64,25 @@ export const useHomeTelemetry = () => {
 
   onMounted(() => {
     desktopMedia = window.matchMedia?.(DESKTOP_QUERY)
+    reducedMotionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)')
     desktopMedia?.addEventListener('change', syncTimers)
+    reducedMotionMedia?.addEventListener('change', syncTimers)
     document.addEventListener('visibilitychange', syncTimers)
+    if (previewRef.value && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(([entry]) => {
+        isInViewport = entry?.isIntersecting ?? false
+        syncTimers()
+      })
+      observer.observe(previewRef.value)
+    }
     syncTimers()
   })
 
   onBeforeUnmount(() => {
     stopTimers()
     desktopMedia?.removeEventListener('change', syncTimers)
+    reducedMotionMedia?.removeEventListener('change', syncTimers)
+    observer?.disconnect()
     document.removeEventListener('visibilitychange', syncTimers)
   })
 

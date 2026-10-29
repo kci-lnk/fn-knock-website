@@ -13,6 +13,7 @@ import {
 } from 'lucide-vue-next'
 import dockerMark from '@/assets/docker-mark.svg'
 import fnOsLogo from '@/assets/fnos-logo.svg'
+import DownloadAvailability from '@/components/install/DownloadAvailability.vue'
 import OpenWrtDownloadDialog from '@/components/home/OpenWrtDownloadDialog.vue'
 import { useDownloadMenu } from '@/composables/useDownloadMenu'
 import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
@@ -34,6 +35,7 @@ let openWrtMediaQuery: MediaQueryList | undefined
 
 const {
   activeDownloadMenu,
+  menuStyle,
   closeDownloadMenus,
   handleDownloadButtonClick,
   handleDownloadFocusIn,
@@ -90,14 +92,14 @@ onBeforeUnmount(() => {
   <div
     id="downloads"
     ref="downloadActionsRef"
-    class="download-actions-shell relative z-40 mt-9"
+    class="download-actions-shell relative z-40 mt-6 sm:mt-9"
     :class="{ 'has-open-menu': activeDownloadMenu }"
     @focusin="handleDownloadFocusIn"
     @focusout="handleDownloadFocusOut"
   >
-    <div class="download-actions-grid mx-auto grid w-full gap-2.5 sm:gap-3">
+    <div class="download-actions-grid mx-auto w-full">
       <div
-        class="download-action-item relative col-span-2 min-w-0 sm:col-span-1"
+        class="download-action-item relative min-w-0"
         :class="{ 'is-active': activeDownloadMenu === 'fnos' }"
         @pointerenter="handleDownloadPointerEnter('fnos', $event)"
         @pointerleave="handleDownloadPointerLeave"
@@ -112,7 +114,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <img :src="fnOsLogo" alt="" class="download-action-icon fnos-mark" />
-            <span class="truncate">
+            <span class="download-label">
               <span class="hidden sm:inline">{{ t('home.downloads.fnos') }}</span>
               <span class="sm:hidden">{{ t('home.downloads.fnosShort') }}</span>
             </span>
@@ -128,10 +130,12 @@ onBeforeUnmount(() => {
           <div
             v-show="activeDownloadMenu === 'fnos'"
             :id="fnOsPanelId"
+            :style="menuStyle"
             role="group"
             :aria-labelledby="fnOsTriggerId"
-            class="download-menu absolute left-1/2 z-50 mt-3 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
+            class="download-menu absolute z-50 w-[min(22rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
           >
+            <DownloadAvailability />
             <a
               v-for="item in fnOsDownloads"
               :key="item.arch"
@@ -152,6 +156,7 @@ onBeforeUnmount(() => {
                 <span class="mt-0.5 block text-xs leading-5 text-slate-500">
                   {{ t(`home.downloads.${item.id}Hint`) }}
                 </span>
+                <DownloadAvailability package-only :url="resolveDownloadUrl('fpk', item.arch)" />
               </span>
               <Download class="download-menu-download" aria-hidden="true" />
             </a>
@@ -178,7 +183,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <Server class="download-action-icon" aria-hidden="true" />
-            <span class="truncate">
+            <span class="download-label">
               <span class="hidden sm:inline">{{ t('home.downloads.openwrt') }}</span>
               <span class="sm:hidden">OpenWrt</span>
             </span>
@@ -198,10 +203,12 @@ onBeforeUnmount(() => {
           <div
             v-show="activeDownloadMenu === 'openwrt' && !isMobileOpenWrt"
             :id="openWrtPanelId"
+            :style="menuStyle"
             role="group"
             :aria-labelledby="openWrtTriggerId"
-            class="download-menu openwrt-download-menu absolute left-1/2 z-50 mt-3 w-[min(48rem,calc(100vw-2rem))] overflow-visible rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
+            class="download-menu openwrt-download-menu absolute z-50 w-[min(48rem,calc(100vw-2rem))] rounded-lg border border-slate-200 bg-white p-2 text-left shadow-[0_18px_48px_rgba(15,23,42,0.12)]"
           >
+            <DownloadAvailability />
             <div
               v-for="item in openWrtDownloads"
               :key="item.arch"
@@ -229,6 +236,7 @@ onBeforeUnmount(() => {
                 >
                   APK 25.12+
                   <Download class="h-3.5 w-3.5" aria-hidden="true" />
+                  <DownloadAvailability package-only :url="resolveDownloadUrl('apk', item.arch)" />
                 </a>
                 <a
                   :href="resolveDownloadUrl('ipk', item.arch) || undefined"
@@ -240,6 +248,7 @@ onBeforeUnmount(() => {
                 >
                   IPK 24.10/{{ t('home.downloads.legacy') }}
                   <Download class="h-3.5 w-3.5" aria-hidden="true" />
+                  <DownloadAvailability package-only :url="resolveDownloadUrl('ipk', item.arch)" />
                 </a>
               </span>
             </div>
@@ -254,7 +263,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <img :src="dockerMark" alt="" class="docker-mark h-6 w-6" />
-            <span class="truncate">
+            <span class="download-label">
               <span class="hidden sm:inline">{{ t('home.downloads.docker') }}</span>
               <span class="sm:hidden">Docker</span>
             </span>
@@ -269,7 +278,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <Laptop class="download-action-icon" aria-hidden="true" />
-            <span class="truncate">{{ t('home.downloads.macos') }}</span>
+            <span class="download-label">{{ t('home.downloads.macos') }}</span>
           </span>
         </RouterLink>
       </div>
@@ -281,7 +290,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <MonitorDown class="download-action-icon" aria-hidden="true" />
-            <span class="truncate">Windows</span>
+            <span class="download-label">Windows</span>
           </span>
         </RouterLink>
       </div>
@@ -293,7 +302,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <HardDriveDownload class="download-action-icon" aria-hidden="true" />
-            <span class="truncate">{{ t('home.downloads.synology') }}</span>
+            <span class="download-label">{{ t('home.downloads.synology') }}</span>
           </span>
         </RouterLink>
       </div>
@@ -305,7 +314,7 @@ onBeforeUnmount(() => {
         >
           <span class="download-action-content">
             <Terminal class="download-action-icon" aria-hidden="true" />
-            <span class="truncate">{{ t('home.downloads.linux') }}</span>
+            <span class="download-label">{{ t('home.downloads.linux') }}</span>
           </span>
         </RouterLink>
       </div>
@@ -324,59 +333,42 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.download-action-item {
-  transition:
-    filter 0.22s ease,
-    opacity 0.22s ease,
-    transform 0.22s ease;
-}
-
 .download-actions-shell {
-  container-name: download-actions;
-  container-type: inline-size;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(1320px, calc(100vw - 2rem));
+  margin-inline: auto;
+  width: 100%;
 }
-
 .download-actions-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
 }
-
-@container download-actions (min-width: 45rem) {
-  .download-actions-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.download-action-item {
+  min-width: 0;
+  width: calc((100% - 0.75rem) / 2);
+}
+.download-action-item:first-child {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .download-action-item,
+  .download-action-item:first-child {
+    width: calc((100% - 1.5rem) / 3);
   }
 }
-
-@container download-actions (min-width: 66.25rem) {
-  .download-actions-grid {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+@media (min-width: 1024px) {
+  .download-action-item,
+  .download-action-item:first-child {
+    width: calc((100% - 2.25rem) / 4);
   }
 }
-
 .download-actions-shell.has-open-menu,
 .download-action-item.is-active {
   z-index: 70;
 }
-
-@supports selector(:has(*)) {
-  .download-actions-grid:has(.download-action-button:hover) .download-action-item,
-  .download-actions-grid:has(.download-menu:hover) .download-action-item,
-  .download-actions-grid:has(.download-action-item.is-active) .download-action-item {
-    filter: saturate(0.55);
-    opacity: 0.42;
-    transform: scale(0.985);
-  }
-
-  .download-actions-grid:has(.download-action-button:hover)
-    .download-action-item:has(.download-action-button:hover),
-  .download-actions-grid:has(.download-menu:hover) .download-action-item:has(.download-menu:hover),
-  .download-actions-grid:has(.download-action-item.is-active) .download-action-item.is-active {
-    filter: none;
-    opacity: 1;
-    transform: none;
-  }
+.download-label {
+  min-width: 0;
+  text-wrap: balance;
 }
 
 .download-action-button {
@@ -389,6 +381,9 @@ onBeforeUnmount(() => {
   --download-sheen: rgb(255 255 255 / 0.38);
   align-items: center;
   appearance: none;
+  height: auto;
+  min-height: 3rem;
+  padding-block: 0.65rem;
   background: var(--download-bg);
   border: 0;
   box-shadow: 0 8px 20px var(--download-shadow);
@@ -427,6 +422,10 @@ onBeforeUnmount(() => {
   transform: translateY(-1px);
 }
 
+.download-action-button:active {
+  transform: translateY(1px);
+}
+
 .download-action-button:hover::before {
   transform: translateX(520%) rotate(16deg);
 }
@@ -434,7 +433,7 @@ onBeforeUnmount(() => {
 .download-action-button:focus-visible,
 .download-menu-option:focus-visible,
 .download-format-link:focus-visible {
-  outline: 2px solid rgb(37 99 235 / 0.42);
+  outline: 2px solid #2563eb;
   outline-offset: 4px;
 }
 
@@ -452,9 +451,9 @@ onBeforeUnmount(() => {
 .download-action-icon,
 .download-action-chevron {
   flex: 0 0 auto;
-  height: 1.35rem;
+  height: 1.15rem;
   transition: transform 0.22s ease;
-  width: 1.35rem;
+  width: 1.15rem;
 }
 
 .download-action-button:hover .download-action-icon {
@@ -470,7 +469,7 @@ onBeforeUnmount(() => {
 }
 
 .download-action--fnos {
-  --download-bg: linear-gradient(135deg, #2f7df6, #3478f6);
+  --download-bg: linear-gradient(135deg, #2563eb, #2563eb);
   --download-hover-bg: linear-gradient(135deg, #2563eb, #7c3aed);
   --download-shadow: rgb(47 125 246 / 0.16);
   --download-shadow-hover: rgb(47 125 246 / 0.2);
@@ -486,7 +485,7 @@ onBeforeUnmount(() => {
 }
 
 .download-action--docker {
-  --download-bg: linear-gradient(135deg, #2496ed, #0b8ddf);
+  --download-bg: linear-gradient(135deg, #0878c5, #0875b5);
   --download-hover-bg: linear-gradient(135deg, #0b72c6, #075985);
   --download-shadow: rgb(36 150 237 / 0.16);
   --download-shadow-hover: rgb(36 150 237 / 0.2);
@@ -512,7 +511,7 @@ onBeforeUnmount(() => {
 }
 
 .download-action--windows {
-  --download-bg: linear-gradient(135deg, #087cd5, #0067b8);
+  --download-bg: linear-gradient(135deg, #0875b5, #0067b8);
   --download-hover-bg: linear-gradient(135deg, #0067b8, #075985);
   --download-shadow: rgb(0 103 184 / 0.16);
   --download-shadow-hover: rgb(0 103 184 / 0.24);
@@ -536,16 +535,17 @@ onBeforeUnmount(() => {
 }
 
 .download-menu {
-  transform: translateX(-50%);
-  z-index: 999;
+  margin-top: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 80;
 }
 
 .openwrt-download-menu {
   display: grid;
   gap: 0.25rem 0.75rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  max-height: none;
-  overflow: visible;
+  overflow-y: auto;
 }
 
 .download-menu-enter-active,
@@ -555,7 +555,7 @@ onBeforeUnmount(() => {
 
 .download-menu-enter-from,
 .download-menu-leave-to {
-  transform: translateX(-50%) translateY(-0.3rem);
+  transform: translateY(-0.3rem);
 }
 
 .download-menu-option {
@@ -577,14 +577,15 @@ onBeforeUnmount(() => {
   font-weight: 700;
   gap: 0.3rem;
   line-height: 1;
-  min-height: 1.7rem;
+  min-height: 2.75rem;
+  flex-wrap: wrap;
   padding: 0.35rem 0.55rem;
   text-decoration: none;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease,
     color 0.18s ease;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .download-format-link:hover {
@@ -670,6 +671,10 @@ onBeforeUnmount(() => {
     transform: none;
   }
 
+  .download-action-button:active {
+    transform: translateY(1px);
+  }
+
   .download-action-item:first-child .download-action-button {
     min-height: 3.25rem;
   }
@@ -709,18 +714,8 @@ onBeforeUnmount(() => {
   }
 
   .download-menu {
-    margin-top: 0.55rem;
+    margin-top: 0;
     width: min(22rem, calc(100vw - 2rem)) !important;
-  }
-
-  @supports selector(:has(*)) {
-    .download-actions-grid:has(.download-action-button:hover) .download-action-item,
-    .download-actions-grid:has(.download-menu:hover) .download-action-item,
-    .download-actions-grid:has(.download-action-item.is-active) .download-action-item {
-      filter: none;
-      opacity: 1;
-      transform: none;
-    }
   }
 }
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Cpu, Download, Server, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
+import DownloadAvailability from '@/components/install/DownloadAvailability.vue'
 import BaseDialog from '@/components/ui/BaseDialog.vue'
 import { useReleaseDownloads } from '@/composables/useReleaseDownloads'
 import { openWrtDownloads, type OpenWrtPackageFormat } from '@/config/home'
@@ -30,7 +31,7 @@ const handleDownloadClick = (
     :open="open"
     aria-labelledby="openwrt-download-dialog-title"
     aria-describedby="openwrt-download-dialog-description"
-    initial-focus="#openwrt-download-first-link"
+    initial-focus=".openwrt-dialog-download[href]"
     backdrop-class="!bg-slate-950/65 backdrop-blur-sm"
     panel-class="max-w-lg rounded-2xl border border-slate-200 bg-white shadow-[0_28px_90px_rgba(15,23,42,0.28)]"
     @close="$emit('close')"
@@ -60,7 +61,7 @@ const handleDownloadClick = (
         </div>
         <button
           type="button"
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           :aria-label="t('home.downloads.dialogClose')"
           @click="$emit('close')"
         >
@@ -70,6 +71,7 @@ const handleDownloadClick = (
     </div>
 
     <div class="space-y-2 p-3">
+      <DownloadAvailability />
       <article
         v-for="(item, index) in openWrtDownloads"
         :key="item.arch"
@@ -102,6 +104,7 @@ const handleDownloadClick = (
           >
             <span>APK 25.12+</span>
             <Download class="h-3.5 w-3.5" aria-hidden="true" />
+            <DownloadAvailability package-only :url="resolveDownloadUrl('apk', item.arch)" />
           </a>
           <a
             :href="resolveDownloadUrl('ipk', item.arch) || undefined"
@@ -113,6 +116,7 @@ const handleDownloadClick = (
           >
             <span>IPK 24.10/{{ t('home.downloads.legacy') }}</span>
             <Download class="h-3.5 w-3.5" aria-hidden="true" />
+            <DownloadAvailability package-only :url="resolveDownloadUrl('ipk', item.arch)" />
           </a>
         </div>
       </article>
@@ -132,7 +136,8 @@ const handleDownloadClick = (
   font-weight: 700;
   gap: 0.35rem;
   justify-content: center;
-  min-height: 2.5rem;
+  min-height: 2.75rem;
+  flex-wrap: wrap;
   padding: 0.55rem 0.4rem;
   text-align: center;
   text-decoration: none;
@@ -150,13 +155,18 @@ const handleDownloadClick = (
 }
 
 .openwrt-dialog-download:focus-visible {
-  outline: 2px solid rgb(14 165 233 / 0.55);
+  outline: 2px solid #0369a1;
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .openwrt-dialog-download {
     transition: none;
+  }
+}
+@media (max-width: 360px) {
+  .openwrt-dialog-download > svg {
+    display: none;
   }
 }
 </style>

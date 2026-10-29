@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
+import DownloadAvailability from '@/components/install/DownloadAvailability.vue'
 import CurrentVersionLink from '@/components/install/CurrentVersionLink.vue'
 import InstallBackLink from '@/components/install/InstallBackLink.vue'
 import PortTable, { type PortItem } from '@/components/install/PortTable.vue'
@@ -125,12 +126,17 @@ const ports = computed<PortItem[]>(() => [
               <span>
                 <strong>{{ t(item.labelKey) }}</strong>
                 <small>{{ t(item.hintKey) }}</small>
+                <DownloadAvailability
+                  package-only
+                  :url="resolveDownloadUrl('synology', item.arch)"
+                />
               </span>
             </a>
             <span class="download-meta text-xs font-medium text-stone-500">{{
               t('install.synology.packageMeta')
             }}</span>
           </div>
+          <DownloadAvailability />
         </div>
 
         <aside class="platform-summary" :aria-label="t('install.synology.summaryLabel')">

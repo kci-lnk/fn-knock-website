@@ -57,9 +57,10 @@ const parseReleaseDownloads = (packages: unknown): ReleaseDownloads => {
   return downloads
 }
 
-export const fetchLatestRelease = async (): Promise<ReleaseInfo> => {
+const fetchRelease = async (signal: AbortSignal): Promise<ReleaseInfo> => {
   const response = await fetch(siteConfig.releaseApiUrl, {
     headers: { Accept: 'application/json' },
+    signal,
   })
 
   if (!response.ok) {
@@ -78,5 +79,23 @@ export const fetchLatestRelease = async (): Promise<ReleaseInfo> => {
     version: payload.version.trim(),
     releaseNotes: payload.release_notes.trim(),
     downloads: parseReleaseDownloads(payload.packages),
+  }
+}
+
+export const fetchLatestRelease = async (): Promise<ReleaseInfo> => {
+  const controller = new AbortController()
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  const deadline = new Promise<never>((_resolve, reject) => {
+    timeout = setTimeout(() => {
+      reject(new Error('Release request timed out'))
+      controller.abort()
+    }, 10_000)
+  })
+
+  try {
+    // Include reading the response body in the deadline, not just the headers.
+    return await Promise.race([fetchRelease(controller.signal), deadline])
+  } finally {
+    clearTimeout(timeout)
   }
 }
